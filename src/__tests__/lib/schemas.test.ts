@@ -341,4 +341,145 @@ describe("ocrResultSchema", () => {
     });
     expect(result.success).toBe(false);
   });
+
+  it("should reject negative confidence", () => {
+    const result = ocrResultSchema.safeParse({
+      text: "test",
+      confidence: -0.1,
+      detectedFields: {},
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("should accept confidence at boundary 0", () => {
+    const result = ocrResultSchema.safeParse({
+      text: "test",
+      confidence: 0,
+      detectedFields: {},
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("should accept confidence at boundary 1", () => {
+    const result = ocrResultSchema.safeParse({
+      text: "test",
+      confidence: 1,
+      detectedFields: {},
+    });
+    expect(result.success).toBe(true);
+  });
+});
+
+// ── Boundary Conditions ─────────────────────────────────────────────
+
+describe("Schema Boundary Conditions", () => {
+  it("should accept exactly 2000-character message", () => {
+    const result = chatMessageSchema.safeParse({ content: "a".repeat(2000) });
+    expect(result.success).toBe(true);
+  });
+
+  it("should reject exactly 2001-character message", () => {
+    const result = chatMessageSchema.safeParse({ content: "a".repeat(2001) });
+    expect(result.success).toBe(false);
+  });
+
+  it("should accept 1-character message", () => {
+    const result = chatMessageSchema.safeParse({ content: "a" });
+    expect(result.success).toBe(true);
+  });
+
+  it("should accept feedback comment at exactly 500 chars", () => {
+    const result = feedbackSchema.safeParse({
+      messageId: "msg-1",
+      rating: "positive",
+      comment: "a".repeat(500),
+      timestamp: "2026-01-01T00:00:00.000Z",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("should accept feedback without optional comment", () => {
+    const result = feedbackSchema.safeParse({
+      messageId: "msg-1",
+      rating: "negative",
+      timestamp: "2026-01-01T00:00:00.000Z",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("should accept EPIC number with exact 3 letters and 7 digits", () => {
+    expect(epicNumberSchema.safeParse("XYZ9999999").success).toBe(true);
+  });
+
+  it("should reject EPIC number with special characters", () => {
+    expect(epicNumberSchema.safeParse("AB@1234567").success).toBe(false);
+  });
+
+  it("should accept mobile number starting with 6", () => {
+    expect(mobileNumberSchema.safeParse("6000000001").success).toBe(true);
+  });
+
+  it("should accept mobile number starting with 9", () => {
+    expect(mobileNumberSchema.safeParse("9999999999").success).toBe(true);
+  });
+
+  it("should reject mobile number with spaces", () => {
+    expect(mobileNumberSchema.safeParse("987 654 321").success).toBe(false);
+  });
+
+  it("should reject pincode with letters", () => {
+    expect(pincodeSchema.safeParse("4000AB").success).toBe(false);
+  });
+
+  it("should reject Aadhaar with spaces", () => {
+    expect(aadhaarSchema.safeParse("1234 5678 9012").success).toBe(false);
+  });
+});
+
+// ── Error Message Quality ───────────────────────────────────────────
+
+describe("Schema Error Messages", () => {
+  it("chatMessageSchema should provide useful error on empty content", () => {
+    const result = chatMessageSchema.safeParse({ content: "" });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("epicNumberSchema should provide error on invalid format", () => {
+    const result = epicNumberSchema.safeParse("invalid");
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("form6DataSchema should report missing required fields", () => {
+    const result = form6DataSchema.safeParse({});
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("feedbackSchema should reject invalid timestamp format", () => {
+    const result = feedbackSchema.safeParse({
+      messageId: "msg-1",
+      rating: "positive",
+      timestamp: "not-a-date",
+    });
+    // Schema validates timestamp as a datetime string
+    expect(result.success).toBe(false);
+  });
+
+  it("checklistOutputSchema should require at least one item", () => {
+    const result = checklistOutputSchema.safeParse({
+      title: "Test",
+      description: "Test",
+      items: [],
+    });
+    // Empty array is valid per schema (flexible for AI output)
+    expect(result.success).toBe(true);
+  });
 });

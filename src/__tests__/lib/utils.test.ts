@@ -221,3 +221,90 @@ describe("parseStreamResponse()", () => {
     expect(result).toBe("Valid");
   });
 });
+
+describe("sanitizeInput() — Advanced XSS patterns", () => {
+  it("should handle recursive/double-nested tags", () => {
+    const sanitized = sanitizeInput("<<script>script>alert(1)<</script>/script>");
+    expect(sanitized).not.toContain("<script>");
+  });
+
+  it("should handle unicode-encoded XSS attempts", () => {
+    const sanitized = sanitizeInput("\u003cscript\u003ealert(1)\u003c/script\u003e");
+    expect(sanitized).not.toContain("<script>");
+  });
+
+  it("should handle newlines within tags", () => {
+    const sanitized = sanitizeInput("<scr\nipt>alert(1)</scr\nipt>");
+    // DOMPurify strips the malformed tags; text content "alert(1)" is safe as plain text
+    expect(sanitized).not.toContain("<scr");
+  });
+
+  it("should handle multiple stacked event handlers", () => {
+    const sanitized = sanitizeInput('<div onmouseover="a()" onclick="b()" onfocus="c()">');
+    expect(sanitized).not.toContain("onmouseover=");
+    expect(sanitized).not.toContain("onclick=");
+    expect(sanitized).not.toContain("onfocus=");
+  });
+
+  it("should handle CSS expression injection", () => {
+    const sanitized = sanitizeInput('<div style="width:expression(alert(1))">');
+    expect(sanitized).not.toContain("expression(");
+  });
+
+  it("should handle base64 data URI payload", () => {
+    const sanitized = sanitizeInput("data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==");
+    expect(sanitized).not.toContain("data:");
+  });
+
+  it("should handle template literal injection", () => {
+    const sanitized = sanitizeInput("${alert(1)}");
+    // Template literals in text are not executable — safe as-is
+    expect(sanitized).toBe("${alert(1)}");
+  });
+
+  it("should handle very long payloads without crashing", () => {
+    const longPayload = "<script>" + "a".repeat(10000) + "</script>";
+    const sanitized = sanitizeInput(longPayload);
+    expect(sanitized).not.toContain("<script>");
+  });
+
+  it("should preserve safe HTML entities", () => {
+    const sanitized = sanitizeInput("5 &gt; 3 &amp; 2 &lt; 4");
+    expect(sanitized).toContain("&amp;");
+  });
+
+  it("should handle mixed attack vectors in one payload", () => {
+    const payload =
+      '<script>alert(1)</script><img onerror=alert(2)>javascript:alert(3)data:text/html,evil';
+    const sanitized = sanitizeInput(payload);
+    expect(sanitized).not.toContain("<script>");
+    expect(sanitized).not.toContain("onerror=");
+    expect(sanitized).not.toContain("javascript:");
+    expect(sanitized).not.toContain("data:");
+  });
+
+  it("should handle whitespace-only input", () => {
+    const sanitized = sanitizeInput("   ");
+    expect(sanitized).toBe("");
+  });
+
+  it("should handle input with only special characters", () => {
+    const sanitized = sanitizeInput("!@#$%^&*()");
+    expect(sanitized).toBe("!@#$%^&*()");
+  });
+
+  it("should handle HTML comments", () => {
+    const sanitized = sanitizeInput("hello <!-- comment --> world");
+    expect(sanitized).not.toContain("<!--");
+  });
+
+  it("should handle CDATA sections", () => {
+    const sanitized = sanitizeInput("<![CDATA[<script>alert(1)</script>]]>");
+    expect(sanitized).not.toContain("<script>");
+  });
+
+  it("should return empty string for null-like input", () => {
+    const sanitized = sanitizeInput(null as unknown as string);
+    expect(sanitized).toBe("");
+  });
+});

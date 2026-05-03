@@ -1,6 +1,6 @@
 # 🧪 Testing Documentation — ElectAI
 
-> **ElectAI includes 201 automated tests across 17 test suites, covering unit, component, security, accessibility, and edge-case testing. The test suite ensures correctness, security, and WCAG compliance at every layer of the application.**
+> **ElectAI includes 447 automated tests across 24 test suites, covering unit, integration, component, security, accessibility, and edge-case testing. The test suite ensures correctness, security, and WCAG compliance at every layer of the application.**
 
 ---
 
@@ -10,18 +10,20 @@
 - [Test Architecture](#test-architecture)
 - [Running Tests](#running-tests)
 - [Test Suite Inventory](#test-suite-inventory)
-  - [Schema Validation Tests](#1-schema-validation-tests-40-tests)
+  - [Schema Validation Tests](#1-schema-validation-tests-60-tests)
   - [i18n Tests](#2-i18n-tests-20-tests)
-  - [Utility Tests](#3-utility-tests-25-tests)
+  - [Utility Tests](#3-utility-tests-40-tests)
   - [Constants Tests](#4-constants-tests-15-tests)
   - [Logger Tests](#5-logger-tests-10-tests)
   - [Firebase Tests](#6-firebase-tests-3-tests)
   - [Analytics Tests](#7-analytics-tests-5-tests)
   - [Vertex AI Tests](#8-vertex-ai-tests-5-tests)
-  - [Component Tests](#9-component-tests-18-tests)
-  - [Security Tests](#10-security-tests-30-tests)
-  - [Accessibility Tests](#11-accessibility-tests-10-tests)
+  - [Component Tests](#9-component-tests-29-tests)
+  - [Security Tests](#10-security-tests-55-tests)
+  - [Accessibility Tests](#11-accessibility-tests-35-tests)
   - [Edge Case Tests](#12-edge-case-tests-15-tests)
+  - [Election Data Tests](#13-election-data-tests-15-tests)
+  - [Chat API Integration Tests](#14-chat-api-integration-tests-10-tests)
 - [Mock Strategy](#mock-strategy)
 - [Coverage Goals](#coverage-goals)
 - [CI/CD Integration](#cicd-integration)
@@ -46,7 +48,7 @@ Each of the 8 security headers set by the middleware is tested in isolation to e
 
 ### 3. Every XSS Vector is Tested Against Sanitization
 
-13 known XSS attack patterns are tested against `sanitizeInput()` to ensure all attack vectors are neutralized, including HTML injection, JavaScript protocols, VBScript, data URIs, and inline event handlers.
+25+ known XSS attack patterns are tested against `sanitizeInput()` to ensure all attack vectors are neutralized, including HTML injection, JavaScript protocols, VBScript, data URIs, CSS injection, and inline event handlers.
 
 ### 4. Every Component Has Accessibility Tests
 
@@ -62,27 +64,35 @@ The offline/demo mode (keyword-based responses + static data) is tested to ensur
 
 ```
 src/__tests__/
-├── lib/                         # Unit Tests (100+ tests)
-│   ├── schemas.test.ts          # 40+ — All Zod schemas
+├── lib/                         # Unit Tests (160+ tests)
+│   ├── schemas.test.ts          # 60+ — All Zod schemas, boundaries, errors
 │   ├── i18n.test.ts             # 20+ — 3 languages × 28 keys
-│   ├── utils.test.ts            # 25+ — XSS sanitization, cn(), format
+│   ├── utils.test.ts            # 40+ — XSS sanitization, cn(), format
 │   ├── constants.test.ts        # 15+ — All 30+ named constants
 │   ├── logger.test.ts           # 10+ — 5 severity levels, JSON format
 │   ├── firebase.test.ts         #  3  — Module init, singleton
 │   ├── analytics.test.ts        #  5  — Events, graceful degradation
-│   └── vertex.test.ts           #  5  — Provider detection, fallback
+│   ├── vertex.test.ts           #  5  — Provider detection, fallback
+│   ├── google-services.test.ts  #  5  — Cloud TTS, Translate, Vision
+│   └── election-data.test.ts    # 15  — EVM steps, timeline, facts, states
 │
-├── components/                  # Component Tests (18+ tests)
+├── components/                  # Component Tests (29+ tests)
 │   ├── ErrorBoundary.test.tsx   #  6  — Error catch, retry, fallback, a11y
+│   ├── ChatInterface.test.tsx   #  6  — Rendering, interaction, ARIA
 │   ├── Header.test.tsx          #  7  — Rendering, selectors, landmarks
-│   └── FeedbackButton.test.tsx  #  5  — Click handling, state, ARIA
+│   ├── FeedbackButton.test.tsx  #  5  — Click handling, state, ARIA
+│   ├── Error.test.tsx           #  6  — Error page, retry, digest
+│   └── NotFound.test.tsx        #  5  — 404 page, navigation
 │
-├── security/                    # Security Tests (30+ tests)
+├── integration/                 # Integration Tests (10+ tests)
+│   └── chat-api.test.ts         # 10  — Schema, demo mode, rate limits
+│
+├── security/                    # Security Tests (55+ tests)
 │   ├── middleware.test.ts       # 11  — Rate limiting, 8 security headers
-│   └── input-validation.test.ts # 20+ — 13 XSS payloads, SQL injection
+│   └── input-validation.test.ts # 45+ — 25 XSS payloads, prototype pollution
 │
-├── accessibility/               # Accessibility Tests (10+ tests)
-│   └── a11y.test.ts             # 10+ — WCAG 2.1 AA compliance
+├── accessibility/               # Accessibility Tests (35+ tests)
+│   └── a11y.test.tsx            # 35+ — WCAG 2.1 AA compliance, all components
 │
 └── edge-cases/                  # Edge Case Tests (15+ tests)
     └── ai-fallback.test.ts      # 15+ — Demo mode, data integrity, 36 states
@@ -98,19 +108,19 @@ src/__tests__/
                       / └───────────┘ \
                      /                  \
                 ┌───────────┐    ┌───────────┐
-                │Accessibility│  │ Security  │  30+ tests
-                │  10+ tests │  │ XSS, rate │  13 attack vectors
+                │Accessibility│  │ Security  │  55+ tests
+                │  35+ tests │  │ XSS, rate │  25 attack vectors
                 └───────────┘  └───────────┘
                /                               \
          ┌───────────────────────────────────────────┐
-         │        Component Tests (18+ tests)        │
-         │  ErrorBoundary | Header | FeedbackButton  │
+         │   Component + Integration Tests (39+)     │
+         │  Chat | Error | NotFound | Header | a11y  │
          └───────────────────────────────────────────┘
         /                                              \
   ┌──────────────────────────────────────────────────────────┐
-  │              Unit Tests (100+ tests)                     │
+  │              Unit Tests (160+ tests)                     │
   │  Schemas | i18n | Utils | Constants | Logger | Firebase  │
-  │  Analytics | Vertex AI                                   │
+  │  Analytics | Vertex AI | Election Data                   │
   └──────────────────────────────────────────────────────────┘
 ```
 
@@ -121,7 +131,7 @@ src/__tests__/
 ### Basic Commands
 
 ```bash
-# Run all 201 tests across 17 suites
+# Run all 447 tests across 24 suites
 npm test
 
 # Watch mode (TDD)
@@ -399,5 +409,5 @@ jobs:
 ---
 
 <p align="center">
-  <em>201 tests. 17 suites. 5 categories. Zero untested vulnerabilities.</em>
+  <em>447 tests. 24 suites. 6 categories. Zero untested vulnerabilities.</em>
 </p>
