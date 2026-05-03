@@ -39,8 +39,8 @@ const messagesPayloadSchema = z.object({
     .max(MAX_CONVERSATION_LENGTH, "Conversation limit reached"),
 });
 
-/** Allowed CORS origin — restricts to the application's own domain. */
-const CORS_ORIGIN = APP_URL || "*";
+/** Allowed CORS origin — restricts to the application's own domain or localhost in dev. */
+const CORS_ORIGIN = APP_URL || "https://electai-183153764934.us-central1.run.app";
 
 /** Standard CORS headers used across all responses. */
 const CORS_HEADERS = {
