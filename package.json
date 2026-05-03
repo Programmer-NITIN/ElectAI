@@ -13,7 +13,9 @@
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css,json}\"",
     "test": "jest --verbose",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage --verbose"
+    "test:coverage": "jest --coverage --verbose",
+    "test:ci": "jest --ci --coverage --verbose",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@ai-sdk/google": "^3.0.64",
@@ -72,5 +74,17 @@
     "typescript"
   ],
   "author": "ElectAI Team",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Programmer-NITIN/ElectAI.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Programmer-NITIN/ElectAI/issues"
+  },
+  "homepage": "https://electai-183153764934.us-central1.run.app",
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  }
 }

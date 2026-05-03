@@ -200,8 +200,14 @@ export function ChatInterface() {
         ))}
 
         {isLoading && (
-          <div className="flex items-center gap-2 text-gray-400 text-sm pl-4" aria-live="polite">
-            <div className="flex gap-1">
+          <div
+            className="flex items-center gap-2 text-gray-400 text-sm pl-4"
+            role="status"
+            aria-live="polite"
+            aria-busy="true"
+            aria-label="Loading response"
+          >
+            <div className="flex gap-1" aria-hidden="true">
               <span className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
               <span className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
               <span className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
@@ -231,9 +237,10 @@ export function ChatInterface() {
               maxLength={MAX_MESSAGE_LENGTH}
               className="w-full bg-slate-800 text-white rounded-xl px-4 py-3 pr-12 resize-none border border-white/10 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none placeholder-gray-500 text-sm"
               aria-label="Type your message"
+              aria-describedby="char-count"
               disabled={isLoading}
             />
-            <span className="absolute bottom-1 right-3 text-xs text-gray-600">
+            <span id="char-count" className="absolute bottom-1 right-3 text-xs text-gray-600" aria-live="off">
               {input.length}/{MAX_MESSAGE_LENGTH}
             </span>
           </div>

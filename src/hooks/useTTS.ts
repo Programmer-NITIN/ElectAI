@@ -1,9 +1,9 @@
+"use client";
+
 /**
  * Text-to-Speech hook using Cloud TTS with browser Web Speech API fallback.
  * @module hooks/useTTS
  */
-
-"use client";
 
 import { useState, useCallback } from "react";
 

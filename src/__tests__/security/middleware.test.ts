@@ -66,6 +66,11 @@ describe("Security Middleware", () => {
       const response = middleware(createRequest("/"));
       expect(response.headers.get("Cross-Origin-Opener-Policy")).toBe("same-origin");
     });
+
+    it("should set Cross-Origin-Resource-Policy", () => {
+      const response = middleware(createRequest("/"));
+      expect(response.headers.get("Cross-Origin-Resource-Policy")).toBe("same-origin");
+    });
   });
 
   describe("Rate Limiting", () => {

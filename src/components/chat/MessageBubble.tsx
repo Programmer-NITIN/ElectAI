@@ -1,19 +1,17 @@
 "use client";
 
 import type { Language } from "@/lib/i18n";
+import type { ChatMessage } from "@/types/chat";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { FeedbackButton } from "@/components/ui/FeedbackButton";
 
-/** Chat message interface — framework-agnostic. */
-export interface ChatMessage {
-  id: string;
-  role: "user" | "assistant" | "system";
-  content: string;
-}
+export type { ChatMessage };
 
 interface MessageBubbleProps {
+  /** The chat message to render. */
   message: ChatMessage;
+  /** Current display language. */
   language: Language;
 }
 

@@ -19,16 +19,14 @@ import { MAX_CONVERSATION_LENGTH } from "@/lib/constants";
 import { DEMO_INTENTS } from "@/lib/election-data";
 import { logger } from "@/lib/logger";
 import { sanitizeInput } from "@/lib/utils";
-
-interface ChatMessage {
-  id: string;
-  role: "user" | "assistant" | "system" | "tool";
-  content: string;
-  parts?: Array<{ type: string; text?: string }>;
-}
+import type { ChatMessage } from "@/types/chat";
 
 /**
  * Extract text content from a message.
+ * Handles both structured parts (AI SDK) and plain content fields.
+ *
+ * @param message - The chat message to extract text from
+ * @returns The extracted plain text content
  */
 function getMessageText(message: ChatMessage): string {
   if (Array.isArray(message.parts)) {
@@ -41,24 +39,64 @@ function getMessageText(message: ChatMessage): string {
 }
 
 /**
+ * Constructs a standardized JSON error response with CORS headers.
+ *
+ * @param message - Human-readable error message
+ * @param status - HTTP status code
+ * @returns Response object with JSON body and CORS headers
+ */
+function errorResponse(message: string, status: number): Response {
+  return Response.json({ error: message }, {
+    status,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
+    },
+  });
+}
+
+/**
+ * OPTIONS /api/chat — CORS preflight handler.
+ * Required for cross-origin requests from client applications.
+ */
+export function OPTIONS(): Response {
+  return new Response(null, {
+    status: 204,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
+    },
+  });
+}
+
+/**
  * POST /api/chat — Streaming chat endpoint.
  * Accepts user messages and returns AI-generated responses with tool calls.
+ *
+ * @param request - Incoming HTTP request with JSON body containing messages
+ * @returns Streaming text response or error JSON
  */
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    // Safely parse JSON body — reject malformed payloads
+    let body: unknown;
+    try {
+      body = await request.json();
+    } catch {
+      return errorResponse("Malformed JSON in request body", 400);
+    }
+
     const { messages } = body as { messages: ChatMessage[] };
 
     // Validate message count
     if (!messages || messages.length === 0) {
-      return Response.json({ error: "No messages provided" }, { status: 400 });
+      return errorResponse("No messages provided", 400);
     }
 
     if (messages.length > MAX_CONVERSATION_LENGTH) {
-      return Response.json(
-        { error: "Conversation limit reached. Please start a new chat." },
-        { status: 400 },
-      );
+      return errorResponse("Conversation limit reached. Please start a new chat.", 400);
     }
 
     // Validate and sanitize the latest message
@@ -71,9 +109,9 @@ export async function POST(request: Request) {
       });
 
       if (!validation.success) {
-        return Response.json(
-          { error: validation.error.issues[0]?.message || "Invalid message" },
-          { status: 400 },
+        return errorResponse(
+          validation.error.issues[0]?.message || "Invalid message",
+          400,
         );
       }
     }
@@ -114,7 +152,8 @@ export async function POST(request: Request) {
         headers: {
           "Content-Type": "text/event-stream",
           "Cache-Control": "no-cache",
-          Connection: "keep-alive",
+          "Connection": "keep-alive",
+          "Access-Control-Allow-Origin": "*",
         },
       });
     }
@@ -141,9 +180,6 @@ export async function POST(request: Request) {
       error: error instanceof Error ? error.message : "Unknown error",
     });
 
-    return Response.json(
-      { error: "An error occurred processing your request." },
-      { status: 500 },
-    );
+    return errorResponse("An error occurred processing your request.", 500);
   }
 }

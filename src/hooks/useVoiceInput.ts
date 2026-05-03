@@ -1,9 +1,9 @@
+"use client";
+
 /**
  * Voice input hook using Web Speech API for speech-to-text.
  * @module hooks/useVoiceInput
  */
-
-"use client";
 
 import { useState, useCallback, useRef } from "react";
 

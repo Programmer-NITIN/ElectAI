@@ -56,6 +56,7 @@ const SECURITY_HEADERS: Record<string, string> = {
     "frame-ancestors 'none'",
   ].join("; "),
   "Cross-Origin-Opener-Policy": "same-origin",
+  "Cross-Origin-Resource-Policy": "same-origin",
 } as const;
 
 // ── Middleware ─────────────────────────────────────────────────────────
