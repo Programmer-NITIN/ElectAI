@@ -12,13 +12,11 @@ import { Send, Mic, Volume2 } from "lucide-react";
  * Implements: message history, input validation, suggestion chips,
  * voice input/output, and auto-scrolling.
  */
-export interface ChatInterfaceProps {}
-
 /**
  * Main chat interface component.
  * Handles the conversation state, user input, and rendering of message bubbles.
  */
-export function ChatInterface(_props: ChatInterfaceProps) {
+export function ChatInterface() {
   const [language] = useState<Language>("en");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");

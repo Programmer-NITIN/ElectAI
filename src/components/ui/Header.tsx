@@ -8,13 +8,11 @@ import { getSupportedLanguages, type Language } from "@/lib/i18n";
  * Application header with branding, language selector, and theme toggle.
  * Implements full keyboard navigation and ARIA attributes.
  */
-export interface HeaderProps {}
-
 /**
  * Main application header component.
  * Displays the application title, language selector, and navigation.
  */
-export function Header(_props: HeaderProps) {
+export function Header() {
   const [language, setLanguage] = useState<Language>("en");
 
   const languages = getSupportedLanguages();

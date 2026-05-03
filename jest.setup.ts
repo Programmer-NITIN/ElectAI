@@ -15,6 +15,7 @@ import "@testing-library/jest-dom";
 
 // Mock isomorphic-dompurify globally since it uses ESM exports that Jest doesn't natively parse
 jest.mock("isomorphic-dompurify", () => {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const dompurify = require("dompurify");
   return dompurify(window);
 });
