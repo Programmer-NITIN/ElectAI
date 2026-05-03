@@ -22,9 +22,11 @@ export function FeedbackButton({ messageId }: FeedbackButtonProps) {
 
   if (feedback) {
     return (
-      <span className="text-xs text-gray-500">
-        {feedback === "positive" ? "👍 Thanks!" : "👎 We'll improve"}
-      </span>
+      <div aria-live="polite">
+        <span className="text-xs text-gray-500">
+          {feedback === "positive" ? "👍 Thanks!" : "👎 We'll improve"}
+        </span>
+      </div>
     );
   }
 

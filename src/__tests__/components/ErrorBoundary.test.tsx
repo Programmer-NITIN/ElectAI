@@ -5,6 +5,8 @@
 
 import { render, screen, fireEvent } from "@testing-library/react";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { logger } from "@/lib/logger";
+import React from "react";
 
 // Component that throws an error for testing
 function ThrowingComponent({ shouldThrow }: { shouldThrow: boolean }) {
@@ -101,9 +103,9 @@ describe("ErrorBoundary", () => {
   it("should handle errorInfo without componentStack", () => {
     const boundary = new ErrorBoundary({ children: null });
     // Mock logger.error to prevent actual logging during test
-    const loggerSpy = jest.spyOn(require("@/lib/logger").logger, "error").mockImplementation(() => {});
+    const loggerSpy = jest.spyOn(logger, "error").mockImplementation(() => {});
     
-    boundary.componentDidCatch(new Error("Test"), {} as any);
+    boundary.componentDidCatch(new Error("Test"), {} as React.ErrorInfo);
     
     expect(loggerSpy).toHaveBeenCalledWith(
       "React ErrorBoundary caught an error",

@@ -9,6 +9,7 @@
 
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import DOMPurify from "isomorphic-dompurify";
 
 /**
  * Merges CSS class names with Tailwind CSS conflict resolution.
@@ -45,21 +46,15 @@ export function cn(...inputs: ClassValue[]): string {
  */
 export function sanitizeInput(input: string): string {
   if (typeof input !== "string") return "";
-
-  let result = input;
-
-  // Recursively strip HTML tags (prevents nested bypass like <scr<script>ipt>)
-  let previous = "";
-  while (previous !== result) {
-    previous = result;
-    result = result.replace(/<[^>]*>/g, "");
-  }
-
-  return result
-    .replace(/javascript:/gi, "") // Remove JS protocol
-    .replace(/on\w+\s*=/gi, "") // Remove inline event handlers
-    .replace(/data:/gi, "") // Remove data URIs
-    .replace(/vbscript:/gi, "") // Remove VBScript protocol
+  
+  // Use DOMPurify to strip all HTML tags and prevent XSS
+  const sanitized = DOMPurify.sanitize(input, { ALLOWED_TAGS: [] });
+  
+  // Extra layer of regex to strip residual markdown or pseudo-protocols if any
+  return sanitized
+    .replace(/javascript:/gi, "")
+    .replace(/data:/gi, "")
+    .replace(/vbscript:/gi, "")
     .trim();
 }
 

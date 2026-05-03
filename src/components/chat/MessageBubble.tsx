@@ -4,6 +4,7 @@ import type { Language } from "@/lib/i18n";
 import type { ChatMessage } from "@/types/chat";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import DOMPurify from "isomorphic-dompurify";
 import { FeedbackButton } from "@/components/ui/FeedbackButton";
 
 export type { ChatMessage };
@@ -46,7 +47,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
         {/* Content */}
         <div className="text-sm leading-relaxed prose prose-invert prose-sm max-w-none">
           {textContent ? (
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{textContent}</ReactMarkdown>
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{DOMPurify.sanitize(textContent)}</ReactMarkdown>
           ) : (
             <p>...</p>
           )}

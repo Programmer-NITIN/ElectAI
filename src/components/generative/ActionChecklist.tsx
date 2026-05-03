@@ -53,7 +53,7 @@ export function ActionChecklist({ title, description, items }: ChecklistOutput) 
             <li key={item.id} className="px-4 py-3">
               <button
                 onClick={() => toggleItem(item.id)}
-                className="flex items-start gap-3 w-full text-left group"
+                className="flex items-start gap-3 w-full text-left group focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded-md p-1 -m-1"
                 role="checkbox"
                 aria-checked={isChecked}
                 aria-label={item.text}

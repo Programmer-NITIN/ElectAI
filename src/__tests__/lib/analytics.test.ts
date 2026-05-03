@@ -12,6 +12,8 @@ jest.mock("firebase/analytics", () => ({
 }));
 
 import { trackEvent, analyticsEvents } from "@/lib/analytics";
+import { getAnalyticsInstance } from "@/lib/firebase";
+import { logEvent } from "firebase/analytics";
 
 describe("trackEvent()", () => {
   it("should not throw when analytics is null", async () => {
@@ -23,8 +25,8 @@ describe("trackEvent()", () => {
   });
 
   it("should call logEvent when analytics is configured", async () => {
-    const mockGetAnalytics = require("@/lib/firebase").getAnalyticsInstance as jest.Mock;
-    const mockLogEvent = require("firebase/analytics").logEvent as jest.Mock;
+    const mockGetAnalytics = getAnalyticsInstance as jest.Mock;
+    const mockLogEvent = logEvent as jest.Mock;
     
     mockGetAnalytics.mockResolvedValueOnce({}); // mock instance
     await trackEvent("test", { foo: "bar" });
@@ -33,7 +35,7 @@ describe("trackEvent()", () => {
   });
 
   it("should silently ignore errors", async () => {
-    const mockGetAnalytics = require("@/lib/firebase").getAnalyticsInstance as jest.Mock;
+    const mockGetAnalytics = getAnalyticsInstance as jest.Mock;
     mockGetAnalytics.mockRejectedValueOnce(new Error("Firebase failed"));
     
     await expect(trackEvent("test")).resolves.not.toThrow();

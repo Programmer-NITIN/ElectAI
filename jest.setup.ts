@@ -13,6 +13,12 @@
 
 import "@testing-library/jest-dom";
 
+// Mock isomorphic-dompurify globally since it uses ESM exports that Jest doesn't natively parse
+jest.mock("isomorphic-dompurify", () => {
+  const dompurify = require("dompurify");
+  return dompurify(window);
+});
+
 const isBrowser = typeof window !== "undefined";
 
 /* ── window.matchMedia ─────────────────────────────────────────────── */
