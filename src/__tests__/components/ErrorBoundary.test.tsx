@@ -97,4 +97,19 @@ describe("ErrorBoundary", () => {
 
     expect(screen.getByText("Recovered")).toBeInTheDocument();
   });
+
+  it("should handle errorInfo without componentStack", () => {
+    const boundary = new ErrorBoundary({ children: null });
+    // Mock logger.error to prevent actual logging during test
+    const loggerSpy = jest.spyOn(require("@/lib/logger").logger, "error").mockImplementation(() => {});
+    
+    boundary.componentDidCatch(new Error("Test"), {} as any);
+    
+    expect(loggerSpy).toHaveBeenCalledWith(
+      "React ErrorBoundary caught an error",
+      expect.objectContaining({ componentStack: "" })
+    );
+    
+    loggerSpy.mockRestore();
+  });
 });

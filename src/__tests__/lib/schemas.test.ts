@@ -134,9 +134,7 @@ describe("chatMessageSchema", () => {
   });
 
   it("should reject unknown fields (strict mode)", () => {
-    expect(
-      chatMessageSchema.safeParse({ content: "hello", extra: "field" }).success,
-    ).toBe(false);
+    expect(chatMessageSchema.safeParse({ content: "hello", extra: "field" }).success).toBe(false);
   });
 });
 
@@ -173,21 +171,15 @@ describe("form6DataSchema", () => {
   });
 
   it("should reject invalid gender", () => {
-    expect(
-      form6DataSchema.safeParse({ ...validForm6, gender: "invalid" }).success,
-    ).toBe(false);
+    expect(form6DataSchema.safeParse({ ...validForm6, gender: "invalid" }).success).toBe(false);
   });
 
   it("should reject invalid mobile", () => {
-    expect(
-      form6DataSchema.safeParse({ ...validForm6, mobile: "1234" }).success,
-    ).toBe(false);
+    expect(form6DataSchema.safeParse({ ...validForm6, mobile: "1234" }).success).toBe(false);
   });
 
   it("should reject unknown fields (strict mode)", () => {
-    expect(
-      form6DataSchema.safeParse({ ...validForm6, extra: "field" }).success,
-    ).toBe(false);
+    expect(form6DataSchema.safeParse({ ...validForm6, extra: "field" }).success).toBe(false);
   });
 });
 

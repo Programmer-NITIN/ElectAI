@@ -33,6 +33,7 @@
 ElectAI's test suite is built on five core principles:
 
 ### 1. Every Schema is Tested (Defense-in-Depth)
+
 ```
 Valid Input  ──→  Schema  ──→  ✅ Accept (correct shape, correct types)
 Invalid Input ──→  Schema  ──→  ❌ Reject (wrong shape, wrong type, overflow)
@@ -40,15 +41,19 @@ Edge Case    ──→  Schema  ──→  ❌ Reject (empty, boundary, injectio
 ```
 
 ### 2. Every Security Header is Individually Verified
+
 Each of the 8 security headers set by the middleware is tested in isolation to ensure no regressions can silently weaken the security posture.
 
 ### 3. Every XSS Vector is Tested Against Sanitization
+
 13 known XSS attack patterns are tested against `sanitizeInput()` to ensure all attack vectors are neutralized, including HTML injection, JavaScript protocols, VBScript, data URIs, and inline event handlers.
 
 ### 4. Every Component Has Accessibility Tests
+
 WCAG 2.1 AA compliance is validated programmatically — ARIA roles, labels, landmarks, focus management, and keyboard navigation are tested for every interactive component.
 
 ### 5. Demo Mode is Fully Tested for Evaluator Reliability
+
 The offline/demo mode (keyword-based responses + static data) is tested to ensure evaluators can exercise all features without API keys.
 
 ---
@@ -161,21 +166,21 @@ npx jest src/__tests__/lib/utils.test.ts --verbose
 
 Tests every Zod schema with valid, invalid, and edge-case inputs:
 
-| Schema | Valid Cases | Invalid Cases | Edge Cases |
-|--------|-----------|--------------|------------|
-| `epicNumberSchema` | `ABC1234567` | lowercase, wrong length | empty string |
-| `mobileNumberSchema` | `9876543210` | starts with 0-5, wrong length | boundary digits |
-| `aadhaarSchema` | `123456789012` | 11/13 digits, letters | mixed types |
-| `pincodeSchema` | `400001` | 5 digits | short input |
-| `chatMessageSchema` | normal message | empty, >2000 chars | unknown fields (.strict) |
-| `form6DataSchema` | complete form | missing fields | invalid enum |
-| `constituencyPhaseSchema` | valid phase | invalid status | default values |
-| `evmStepSchema` | step with icon | missing required | optional fields |
-| `factCardOutputSchema` | card with sources | missing facts | empty arrays |
-| `checklistItemSchema` | item with priority | missing text | default priority |
-| `checklistOutputSchema` | valid output | empty items | nested validation |
-| `feedbackSchema` | positive rating | invalid rating, >500 comment | timestamp format |
-| `ocrResultSchema` | 0.95 confidence | confidence >1.0 | boundary values |
+| Schema                    | Valid Cases        | Invalid Cases                 | Edge Cases               |
+| ------------------------- | ------------------ | ----------------------------- | ------------------------ |
+| `epicNumberSchema`        | `ABC1234567`       | lowercase, wrong length       | empty string             |
+| `mobileNumberSchema`      | `9876543210`       | starts with 0-5, wrong length | boundary digits          |
+| `aadhaarSchema`           | `123456789012`     | 11/13 digits, letters         | mixed types              |
+| `pincodeSchema`           | `400001`           | 5 digits                      | short input              |
+| `chatMessageSchema`       | normal message     | empty, >2000 chars            | unknown fields (.strict) |
+| `form6DataSchema`         | complete form      | missing fields                | invalid enum             |
+| `constituencyPhaseSchema` | valid phase        | invalid status                | default values           |
+| `evmStepSchema`           | step with icon     | missing required              | optional fields          |
+| `factCardOutputSchema`    | card with sources  | missing facts                 | empty arrays             |
+| `checklistItemSchema`     | item with priority | missing text                  | default priority         |
+| `checklistOutputSchema`   | valid output       | empty items                   | nested validation        |
+| `feedbackSchema`          | positive rating    | invalid rating, >500 comment  | timestamp format         |
+| `ocrResultSchema`         | 0.95 confidence    | confidence >1.0               | boundary values          |
 
 ---
 
@@ -183,12 +188,12 @@ Tests every Zod schema with valid, invalid, and edge-case inputs:
 
 **File**: `src/__tests__/lib/i18n.test.ts`
 
-| Test Group | Tests | What's Validated |
-|-----------|-------|------------------|
-| `t()` function | 6 | EN/HI/MR translations, fallback to English, missing key behavior |
-| Core UI strings | 1 (28× keys × 3 languages = 84 checks) | All UI strings exist in all 3 languages |
-| `getChips()` | 4 | 5 chips per language, non-empty, min length |
-| `getSupportedLanguages()` | 3 | Returns 3 languages with codes and names |
+| Test Group                | Tests                                  | What's Validated                                                 |
+| ------------------------- | -------------------------------------- | ---------------------------------------------------------------- |
+| `t()` function            | 6                                      | EN/HI/MR translations, fallback to English, missing key behavior |
+| Core UI strings           | 1 (28× keys × 3 languages = 84 checks) | All UI strings exist in all 3 languages                          |
+| `getChips()`              | 4                                      | 5 chips per language, non-empty, min length                      |
+| `getSupportedLanguages()` | 3                                      | Returns 3 languages with codes and names                         |
 
 ---
 
@@ -196,12 +201,12 @@ Tests every Zod schema with valid, invalid, and edge-case inputs:
 
 **File**: `src/__tests__/lib/utils.test.ts`
 
-| Function | Tests | What's Validated |
-|----------|-------|------------------|
-| `cn()` | 5 | Class merging, Tailwind conflicts, conditionals, empty/null |
-| `sanitizeInput()` | 12 | HTML tags, JS protocol, VBS, data URIs, event handlers, nested tags, case insensitive |
-| `formatDate()` | 1 | Date string formatting |
-| `truncate()` | 3 | Short text passthrough, long text ellipsis, default maxLength |
+| Function          | Tests | What's Validated                                                                      |
+| ----------------- | ----- | ------------------------------------------------------------------------------------- |
+| `cn()`            | 5     | Class merging, Tailwind conflicts, conditionals, empty/null                           |
+| `sanitizeInput()` | 12    | HTML tags, JS protocol, VBS, data URIs, event handlers, nested tags, case insensitive |
+| `formatDate()`    | 1     | Date string formatting                                                                |
+| `truncate()`      | 3     | Short text passthrough, long text ellipsis, default maxLength                         |
 
 ---
 
@@ -211,15 +216,15 @@ Tests every Zod schema with valid, invalid, and edge-case inputs:
 
 Validates every named constant is defined, correctly typed, and has a reasonable value:
 
-| Group | Tests | Constants Validated |
-|-------|-------|-------------------|
-| Rate Limiting | 2 | `RATE_LIMIT_WINDOW_MS`, `MAX_REQUESTS_PER_WINDOW` |
-| Chat Constraints | 4 | `MAX_MESSAGE_LENGTH`, `MAX_CONVERSATION_LENGTH`, `MAX_TTS_LENGTH`, `MAX_TRANSLATE_LENGTH` |
-| UI Configuration | 5 | `CHIP_COUNT`, `SCROLL_DEBOUNCE_MS`, `ENTRANCE_ANIMATION_DURATION`, `STAGGER_DELAY`, `DESKTOP_BREAKPOINT` |
-| Firebase | 1 | 4 collection names |
-| Input Validation | 3 | `MAX_PAYLOAD_SIZE`, `MAX_OCR_FILE_SIZE`, `ALLOWED_IMAGE_TYPES` |
-| SEO & Metadata | 2 | `APP_NAME`, `APP_TAGLINE`, `APP_DESCRIPTION`, `APP_URL` |
-| Google Services | 3 | `VERTEX_AI_REGION`, `GOOGLE_MAPS_EMBED_URL`, `RECAPTCHA_VERIFY_URL` |
+| Group            | Tests | Constants Validated                                                                                      |
+| ---------------- | ----- | -------------------------------------------------------------------------------------------------------- |
+| Rate Limiting    | 2     | `RATE_LIMIT_WINDOW_MS`, `MAX_REQUESTS_PER_WINDOW`                                                        |
+| Chat Constraints | 4     | `MAX_MESSAGE_LENGTH`, `MAX_CONVERSATION_LENGTH`, `MAX_TTS_LENGTH`, `MAX_TRANSLATE_LENGTH`                |
+| UI Configuration | 5     | `CHIP_COUNT`, `SCROLL_DEBOUNCE_MS`, `ENTRANCE_ANIMATION_DURATION`, `STAGGER_DELAY`, `DESKTOP_BREAKPOINT` |
+| Firebase         | 1     | 4 collection names                                                                                       |
+| Input Validation | 3     | `MAX_PAYLOAD_SIZE`, `MAX_OCR_FILE_SIZE`, `ALLOWED_IMAGE_TYPES`                                           |
+| SEO & Metadata   | 2     | `APP_NAME`, `APP_TAGLINE`, `APP_DESCRIPTION`, `APP_URL`                                                  |
+| Google Services  | 3     | `VERTEX_AI_REGION`, `GOOGLE_MAPS_EMBED_URL`, `RECAPTCHA_VERIFY_URL`                                      |
 
 ---
 
@@ -227,27 +232,27 @@ Validates every named constant is defined, correctly typed, and has a reasonable
 
 **File**: `src/__tests__/lib/logger.test.ts`
 
-| Test | What's Validated |
-|------|------------------|
-| Info to stdout | `console.log` called with severity INFO |
-| Debug to stdout | `console.log` called with severity DEBUG |
-| Warning to stdout | `console.log` called with severity WARNING |
-| Error to stderr | `console.error` called with severity ERROR |
+| Test               | What's Validated                              |
+| ------------------ | --------------------------------------------- |
+| Info to stdout     | `console.log` called with severity INFO       |
+| Debug to stdout    | `console.log` called with severity DEBUG      |
+| Warning to stdout  | `console.log` called with severity WARNING    |
+| Error to stderr    | `console.error` called with severity ERROR    |
 | Critical to stderr | `console.error` called with severity CRITICAL |
-| Metadata inclusion | Extra fields merged into log entry |
-| Valid JSON output | Output can be parsed by `JSON.parse` |
-| ISO 8601 timestamp | Timestamp matches ISO format |
-| No metadata | Works without optional metadata parameter |
+| Metadata inclusion | Extra fields merged into log entry            |
+| Valid JSON output  | Output can be parsed by `JSON.parse`          |
+| ISO 8601 timestamp | Timestamp matches ISO format                  |
+| No metadata        | Works without optional metadata parameter     |
 
 ---
 
 ### 6–8. Firebase, Analytics, Vertex AI Tests (13 tests)
 
-| Suite | File | Tests | What's Validated |
-|-------|------|-------|------------------|
-| Firebase | `firebase.test.ts` | 3 | Module exports, configuration detection, singleton |
-| Analytics | `analytics.test.ts` | 5 | 10 event helpers exist, null-safe execution |
-| Vertex AI | `vertex.test.ts` | 5 | Provider detection, config parsing, dual-provider fallback |
+| Suite     | File                | Tests | What's Validated                                           |
+| --------- | ------------------- | ----- | ---------------------------------------------------------- |
+| Firebase  | `firebase.test.ts`  | 3     | Module exports, configuration detection, singleton         |
+| Analytics | `analytics.test.ts` | 5     | 10 event helpers exist, null-safe execution                |
+| Vertex AI | `vertex.test.ts`    | 5     | Provider detection, config parsing, dual-provider fallback |
 
 ---
 
@@ -255,11 +260,11 @@ Validates every named constant is defined, correctly typed, and has a reasonable
 
 **File**: `src/__tests__/components/`
 
-| Component | Tests | What's Validated |
-|-----------|-------|------------------|
-| **ErrorBoundary** | 6 | Error catching, error UI display, retry button, alert role, custom fallback, recovery on retry |
-| **Header** | 7 | App name, tagline, language selector (3 options), banner role, India flag, ballot emoji |
-| **FeedbackButton** | 5 | Thumbs up/down rendering, positive feedback message, negative feedback message, group role, button hiding after feedback |
+| Component          | Tests | What's Validated                                                                                                         |
+| ------------------ | ----- | ------------------------------------------------------------------------------------------------------------------------ |
+| **ErrorBoundary**  | 6     | Error catching, error UI display, retry button, alert role, custom fallback, recovery on retry                           |
+| **Header**         | 7     | App name, tagline, language selector (3 options), banner role, India flag, ballot emoji                                  |
+| **FeedbackButton** | 5     | Thumbs up/down rendering, positive feedback message, negative feedback message, group role, button hiding after feedback |
 
 ---
 
@@ -268,30 +273,32 @@ Validates every named constant is defined, correctly typed, and has a reasonable
 **Files**: `src/__tests__/security/`
 
 #### Middleware Tests (11 tests)
-| Test | What's Validated |
-|------|------------------|
-| X-Content-Type-Options | Set to `nosniff` |
-| X-Frame-Options | Set to `DENY` |
-| X-XSS-Protection | Set to `1; mode=block` |
-| HSTS | Contains `max-age=63072000`, `preload`, `includeSubDomains` |
-| Referrer-Policy | Set to `strict-origin-when-cross-origin` |
-| Permissions-Policy | Contains `camera=()`, `microphone=(self)` |
-| CSP | Contains `default-src 'self'`, `frame-ancestors 'none'` |
-| COOP | Set to `same-origin` |
-| Normal API request | Returns non-429 status |
-| Rate limit exceeded | Returns 429 after 35 requests from same IP |
-| Non-API routes | Not rate limited |
+
+| Test                   | What's Validated                                            |
+| ---------------------- | ----------------------------------------------------------- |
+| X-Content-Type-Options | Set to `nosniff`                                            |
+| X-Frame-Options        | Set to `DENY`                                               |
+| X-XSS-Protection       | Set to `1; mode=block`                                      |
+| HSTS                   | Contains `max-age=63072000`, `preload`, `includeSubDomains` |
+| Referrer-Policy        | Set to `strict-origin-when-cross-origin`                    |
+| Permissions-Policy     | Contains `camera=()`, `microphone=(self)`                   |
+| CSP                    | Contains `default-src 'self'`, `frame-ancestors 'none'`     |
+| COOP                   | Set to `same-origin`                                        |
+| Normal API request     | Returns non-429 status                                      |
+| Rate limit exceeded    | Returns 429 after 35 requests from same IP                  |
+| Non-API routes         | Not rate limited                                            |
 
 #### Input Validation Tests (20+ tests)
-| Test Category | Tests | What's Validated |
-|--------------|-------|------------------|
-| XSS Payloads | 13 | All 13 known attack vectors neutralized |
-| SQL Injection | 1 | Schema accepts as text (it's user input) |
-| EPIC Injection | 2 | Rejects HTML/SQL in EPIC field |
-| Aadhaar Injection | 2 | Rejects non-numeric in Aadhaar |
-| Length Boundaries | 2 | Exactly at and 1 over max length |
-| Unicode Input | 1 | Hindi/Marathi characters accepted |
-| Emoji Input | 1 | Emoji characters accepted |
+
+| Test Category     | Tests | What's Validated                         |
+| ----------------- | ----- | ---------------------------------------- |
+| XSS Payloads      | 13    | All 13 known attack vectors neutralized  |
+| SQL Injection     | 1     | Schema accepts as text (it's user input) |
+| EPIC Injection    | 2     | Rejects HTML/SQL in EPIC field           |
+| Aadhaar Injection | 2     | Rejects non-numeric in Aadhaar           |
+| Length Boundaries | 2     | Exactly at and 1 over max length         |
+| Unicode Input     | 1     | Hindi/Marathi characters accepted        |
+| Emoji Input       | 1     | Emoji characters accepted                |
 
 ---
 
@@ -299,18 +306,18 @@ Validates every named constant is defined, correctly typed, and has a reasonable
 
 **File**: `src/__tests__/accessibility/a11y.test.ts`
 
-| Component | Test | WCAG Criteria |
-|-----------|------|---------------|
-| Header | Language selector has `aria-label` | 1.1.1 Non-text Content |
-| Header | Has `banner` role | 1.3.1 Info and Relationships |
-| Header | Emoji has `aria-label` | 1.1.1 Non-text Content |
-| FeedbackButton | Has `group` role with label | 1.3.1 Info and Relationships |
-| FeedbackButton | Buttons have `aria-label` | 4.1.2 Name, Role, Value |
-| ErrorBoundary | Has `alert` role on error | 4.1.3 Status Messages |
-| ErrorBoundary | Has `aria-live="assertive"` | 4.1.3 Status Messages |
-| ErrorBoundary | Retry button has label | 4.1.2 Name, Role, Value |
-| Focus | `focus:ring-2` classes present | 2.4.7 Focus Visible |
-| ARIA | All interactive elements named | 4.1.2 Name, Role, Value |
+| Component      | Test                               | WCAG Criteria                |
+| -------------- | ---------------------------------- | ---------------------------- |
+| Header         | Language selector has `aria-label` | 1.1.1 Non-text Content       |
+| Header         | Has `banner` role                  | 1.3.1 Info and Relationships |
+| Header         | Emoji has `aria-label`             | 1.1.1 Non-text Content       |
+| FeedbackButton | Has `group` role with label        | 1.3.1 Info and Relationships |
+| FeedbackButton | Buttons have `aria-label`          | 4.1.2 Name, Role, Value      |
+| ErrorBoundary  | Has `alert` role on error          | 4.1.3 Status Messages        |
+| ErrorBoundary  | Has `aria-live="assertive"`        | 4.1.3 Status Messages        |
+| ErrorBoundary  | Retry button has label             | 4.1.2 Name, Role, Value      |
+| Focus          | `focus:ring-2` classes present     | 2.4.7 Focus Visible          |
+| ARIA           | All interactive elements named     | 4.1.2 Name, Role, Value      |
 
 ---
 
@@ -318,47 +325,50 @@ Validates every named constant is defined, correctly typed, and has a reasonable
 
 **File**: `src/__tests__/edge-cases/ai-fallback.test.ts`
 
-| Test Group | Tests | What's Validated |
-|-----------|-------|------------------|
-| Demo Mode Intents | 2 | All 7 topics have responses > 50 chars, keyword matching works |
-| EVM Data | 2 | 8 steps exist, each has id/title/description |
-| Timeline Data | 2 | 8 phases exist, each has valid status enum |
-| ECI Facts | 2 | 5+ facts exist, sources array is populated |
-| Checklist Data | 2 | 5+ items exist, each has priority level |
-| Form 6 Data | 2 | Requirements exist, all 3 categories covered |
-| Indian States | 1 | All 36 states/UTs including Maharashtra, Delhi, Kerala |
+| Test Group        | Tests | What's Validated                                               |
+| ----------------- | ----- | -------------------------------------------------------------- |
+| Demo Mode Intents | 2     | All 7 topics have responses > 50 chars, keyword matching works |
+| EVM Data          | 2     | 8 steps exist, each has id/title/description                   |
+| Timeline Data     | 2     | 8 phases exist, each has valid status enum                     |
+| ECI Facts         | 2     | 5+ facts exist, sources array is populated                     |
+| Checklist Data    | 2     | 5+ items exist, each has priority level                        |
+| Form 6 Data       | 2     | Requirements exist, all 3 categories covered                   |
+| Indian States     | 1     | All 36 states/UTs including Maharashtra, Delhi, Kerala         |
 
 ---
 
 ## Mock Strategy
 
 ### Browser APIs (jest.setup.ts)
-| API | Mock Implementation |
-|-----|-------------------|
-| `window.matchMedia` | Returns object with `matches: false` |
-| `window.SpeechRecognition` | Mock constructor with start/stop |
-| `window.speechSynthesis` | Mock speak/cancel/getVoices |
-| `IntersectionObserver` | Mock observe/unobserve/disconnect |
-| `ResizeObserver` | Mock observe/unobserve/disconnect |
-| `Element.scrollIntoView` | No-op function |
-| `window.scrollTo` | No-op function |
-| `structuredClone` | Deep clone via JSON parse/stringify |
+
+| API                        | Mock Implementation                  |
+| -------------------------- | ------------------------------------ |
+| `window.matchMedia`        | Returns object with `matches: false` |
+| `window.SpeechRecognition` | Mock constructor with start/stop     |
+| `window.speechSynthesis`   | Mock speak/cancel/getVoices          |
+| `IntersectionObserver`     | Mock observe/unobserve/disconnect    |
+| `ResizeObserver`           | Mock observe/unobserve/disconnect    |
+| `Element.scrollIntoView`   | No-op function                       |
+| `window.scrollTo`          | No-op function                       |
+| `structuredClone`          | Deep clone via JSON parse/stringify  |
 
 ### Firebase SDK
+
 All Firebase modules (`firebase/app`, `firebase/auth`, `firebase/firestore`, `firebase/analytics`) are mocked at the module level to prevent network calls during testing.
 
 ---
 
 ## Coverage Goals
 
-| Metric | Target | Rationale |
-|--------|--------|-----------|
-| **Statements** | >80% | Core business logic fully covered |
-| **Branches** | >75% | All conditional paths tested |
-| **Functions** | >85% | All exported functions tested |
-| **Lines** | >80% | No dead code in critical modules |
+| Metric         | Target | Rationale                         |
+| -------------- | ------ | --------------------------------- |
+| **Statements** | >80%   | Core business logic fully covered |
+| **Branches**   | >75%   | All conditional paths tested      |
+| **Functions**  | >85%   | All exported functions tested     |
+| **Lines**      | >80%   | No dead code in critical modules  |
 
 ### Critical Modules (100% coverage target)
+
 - `lib/schemas.ts` — All validation logic
 - `lib/utils.ts` — XSS sanitization
 - `lib/i18n.ts` — All translation keys
@@ -379,7 +389,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: '20' }
+        with: { node-version: "20" }
       - run: npm ci
       - run: npm test -- --coverage --ci
       - run: npm run lint

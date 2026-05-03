@@ -9,11 +9,11 @@
 import { NextRequest } from "next/server";
 import { middleware } from "@/middleware";
 
-function createRequest(path: string, ip = "127.0.0.1"): NextRequest {
+function createRequest(path: string, ip?: string): NextRequest {
   const url = new URL(path, "http://localhost:3000");
-  return new NextRequest(url, {
-    headers: new Headers({ "x-forwarded-for": ip }),
-  });
+  const headers = new Headers();
+  if (ip !== undefined) headers.set("x-forwarded-for", ip);
+  return new NextRequest(url, { headers });
 }
 
 describe("Security Middleware", () => {
@@ -43,9 +43,7 @@ describe("Security Middleware", () => {
 
     it("should set Referrer-Policy", () => {
       const response = middleware(createRequest("/"));
-      expect(response.headers.get("Referrer-Policy")).toBe(
-        "strict-origin-when-cross-origin",
-      );
+      expect(response.headers.get("Referrer-Policy")).toBe("strict-origin-when-cross-origin");
     });
 
     it("should set Permissions-Policy", () => {
@@ -90,6 +88,11 @@ describe("Security Middleware", () => {
 
     it("should not rate limit non-API routes", () => {
       const response = middleware(createRequest("/", "10.0.0.2"));
+      expect(response.status).not.toBe(429);
+    });
+
+    it("should handle missing x-forwarded-for header (anonymous)", () => {
+      const response = middleware(createRequest("/api/chat"));
       expect(response.status).not.toBe(429);
     });
   });

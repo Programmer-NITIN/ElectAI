@@ -63,7 +63,11 @@ body {
 /* ── Background Grid Pattern ────────────────────────────────────────── */
 .bg-grid {
   background-color: #0f172a;
-  background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.03) 1px, transparent 0);
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgba(255, 255, 255, 0.03) 1px,
+    transparent 0
+  );
   background-size: 32px 32px;
 }
 
@@ -130,7 +134,8 @@ body {
 }
 
 @keyframes pulse-glow {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.4);
   }
   50% {

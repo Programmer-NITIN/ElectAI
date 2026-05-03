@@ -10,8 +10,8 @@ import { chatMessageSchema, epicNumberSchema, aadhaarSchema } from "@/lib/schema
 describe("XSS Prevention", () => {
   const xssPayloads = [
     '<script>alert("xss")</script>',
-    '<img src=x onerror=alert(1)>',
-    '<svg onload=alert(1)>',
+    "<img src=x onerror=alert(1)>",
+    "<svg onload=alert(1)>",
     "javascript:alert(document.cookie)",
     "&#x6A;&#x61;&#x76;&#x61;",
     '<iframe src="evil.com"></iframe>',
@@ -19,9 +19,9 @@ describe("XSS Prevention", () => {
     "data:text/html,<script>alert(1)</script>",
     '<div onmouseover="alert(1)">hover</div>',
     "vbscript:MsgBox",
-    '<input onfocus=alert(1) autofocus>',
-    '<body onload=alert(1)>',
-    '<marquee onstart=alert(1)>',
+    "<input onfocus=alert(1) autofocus>",
+    "<body onload=alert(1)>",
+    "<marquee onstart=alert(1)>",
   ];
 
   it.each(xssPayloads)("should neutralize XSS payload: %s", (payload) => {
@@ -71,14 +71,12 @@ describe("Input Validation Boundaries", () => {
   });
 
   it("should handle unicode in valid messages", () => {
-    expect(
-      chatMessageSchema.safeParse({ content: "मतदाता पंजीकरण कैसे करें?" }).success,
-    ).toBe(true);
+    expect(chatMessageSchema.safeParse({ content: "मतदाता पंजीकरण कैसे करें?" }).success).toBe(
+      true,
+    );
   });
 
   it("should handle emojis in valid messages", () => {
-    expect(
-      chatMessageSchema.safeParse({ content: "How to vote? 🗳️" }).success,
-    ).toBe(true);
+    expect(chatMessageSchema.safeParse({ content: "How to vote? 🗳️" }).success).toBe(true);
   });
 });

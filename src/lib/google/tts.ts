@@ -26,10 +26,7 @@ const VOICE_MAP: Record<string, { languageCode: string; name: string }> = {
  * @param language - Language code (en, hi, mr)
  * @returns Base64-encoded audio content, or null on failure
  */
-export async function synthesizeSpeech(
-  text: string,
-  language = "en",
-): Promise<string | null> {
+export async function synthesizeSpeech(text: string, language = "en"): Promise<string | null> {
   if (!text || text.length > MAX_TTS_LENGTH) return null;
   if (!isTTSAvailable()) {
     logger.warn("Cloud TTS not configured", { component: "tts" });

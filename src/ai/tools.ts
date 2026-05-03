@@ -37,8 +37,7 @@ export const showForm6Wizard = tool({
     ),
     registrationUrl: z.string().optional(),
   }),
-  execute: async (params) =>
-    params.requirements.length > 0 ? params : DEFAULT_FORM6_OUTPUT,
+  execute: async (params) => (params.requirements.length > 0 ? params : DEFAULT_FORM6_OUTPUT),
 });
 
 /** Tool: Display EVM/VVPAT voting simulator. */
@@ -58,8 +57,7 @@ export const showEVMSimulator = tool({
       }),
     ),
   }),
-  execute: async (params) =>
-    params.steps.length > 0 ? params : EVM_VOTING_STEPS,
+  execute: async (params) => (params.steps.length > 0 ? params : EVM_VOTING_STEPS),
 });
 
 /** Tool: Display election timeline roadmap. */
@@ -82,8 +80,7 @@ export const showConstituencyRoadmap = tool({
       }),
     ),
   }),
-  execute: async (params) =>
-    params.steps.length > 0 ? params : CONSTITUENCY_ROADMAP,
+  execute: async (params) => (params.steps.length > 0 ? params : CONSTITUENCY_ROADMAP),
 });
 
 /** Tool: Display ECI fact card. */
@@ -100,12 +97,9 @@ export const showFactCard = tool({
         icon: z.string().optional(),
       }),
     ),
-    sources: z
-      .array(z.object({ title: z.string(), url: z.string().optional() }))
-      .optional(),
+    sources: z.array(z.object({ title: z.string(), url: z.string().optional() })).optional(),
   }),
-  execute: async (params) =>
-    params.facts.length > 0 ? params : ECI_FACTS,
+  execute: async (params) => (params.facts.length > 0 ? params : ECI_FACTS),
 });
 
 /** Tool: Display interactive voter checklist. */
@@ -126,8 +120,7 @@ export const showChecklist = tool({
       }),
     ),
   }),
-  execute: async (params) =>
-    params.items.length > 0 ? params : VOTER_REGISTRATION_CHECKLIST,
+  execute: async (params) => (params.items.length > 0 ? params : VOTER_REGISTRATION_CHECKLIST),
 });
 
 /** All tools bundled for the streamText call. */

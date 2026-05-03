@@ -10,8 +10,20 @@ import { APP_NAME } from "@/lib/constants";
 
 // Mock next/link as a simple anchor
 jest.mock("next/link", () => {
-  return function MockLink({ children, href, ...props }: { children: React.ReactNode; href: string; [key: string]: unknown }) {
-    return <a href={href} {...props}>{children}</a>;
+  return function MockLink({
+    children,
+    href,
+    ...props
+  }: {
+    children: React.ReactNode;
+    href: string;
+    [key: string]: unknown;
+  }) {
+    return (
+      <a href={href} {...props}>
+        {children}
+      </a>
+    );
   };
 });
 

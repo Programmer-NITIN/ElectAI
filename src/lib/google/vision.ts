@@ -29,7 +29,7 @@ export async function extractVoterIdText(
     detectedFields: {},
   };
 
-  if (!ALLOWED_IMAGE_TYPES.includes(mimeType as typeof ALLOWED_IMAGE_TYPES[number])) {
+  if (!ALLOWED_IMAGE_TYPES.includes(mimeType as (typeof ALLOWED_IMAGE_TYPES)[number])) {
     logger.warn("Invalid image type for OCR", { component: "vision", mimeType });
     return defaultResult;
   }

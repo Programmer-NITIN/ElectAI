@@ -44,7 +44,9 @@ describe("Accessibility — WCAG 2.1 AA Compliance", () => {
 
   describe("ErrorBoundary Component", () => {
     it("should have alert role when error occurs", () => {
-      const ThrowError = () => { throw new Error("test"); };
+      const ThrowError = () => {
+        throw new Error("test");
+      };
       const spy = jest.spyOn(console, "error").mockImplementation();
 
       render(
@@ -58,7 +60,9 @@ describe("Accessibility — WCAG 2.1 AA Compliance", () => {
     });
 
     it("should have aria-live assertive on error", () => {
-      const ThrowError = () => { throw new Error("test"); };
+      const ThrowError = () => {
+        throw new Error("test");
+      };
       const spy = jest.spyOn(console, "error").mockImplementation();
 
       render(
@@ -72,7 +76,9 @@ describe("Accessibility — WCAG 2.1 AA Compliance", () => {
     });
 
     it("should have accessible retry button", () => {
-      const ThrowError = () => { throw new Error("test"); };
+      const ThrowError = () => {
+        throw new Error("test");
+      };
       const spy = jest.spyOn(console, "error").mockImplementation();
 
       render(
@@ -105,9 +111,7 @@ describe("Accessibility — WCAG 2.1 AA Compliance", () => {
       render(<FeedbackButton messageId="test" />);
       const buttons = screen.getAllByRole("button");
       for (const button of buttons) {
-        expect(
-          button.getAttribute("aria-label") || button.textContent,
-        ).toBeTruthy();
+        expect(button.getAttribute("aria-label") || button.textContent).toBeTruthy();
       }
     });
   });

@@ -8,7 +8,11 @@ import { ExternalLink } from "lucide-react";
  */
 export function FactCard({ title, summary, facts, sources }: FactCardOutput) {
   return (
-    <div className="bg-slate-800/60 rounded-xl border border-white/10 overflow-hidden" role="region" aria-label={title}>
+    <div
+      className="bg-slate-800/60 rounded-xl border border-white/10 overflow-hidden"
+      role="region"
+      aria-label={title}
+    >
       <div className="p-4 border-b border-white/10 bg-gradient-to-r from-amber-600/10 to-orange-600/10">
         <h3 className="text-lg font-semibold text-white">{title}</h3>
         <p className="text-sm text-gray-400 mt-1">{summary}</p>
@@ -29,7 +33,13 @@ export function FactCard({ title, summary, facts, sources }: FactCardOutput) {
       {sources && sources.length > 0 && (
         <div className="px-4 py-2 border-t border-white/5 flex flex-wrap gap-3">
           {sources.map((source, i) => (
-            <a key={i} href={source.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs text-indigo-400 hover:text-indigo-300 transition-colors">
+            <a
+              key={i}
+              href={source.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1 text-xs text-indigo-400 hover:text-indigo-300 transition-colors"
+            >
               <ExternalLink size={10} /> {source.title}
             </a>
           ))}

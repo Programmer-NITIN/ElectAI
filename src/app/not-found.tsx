@@ -11,8 +11,8 @@ export default function NotFound() {
       <div className="text-7xl mb-6">🗳️</div>
       <h1 className="text-4xl font-bold text-white mb-4">404 — Booth Not Found</h1>
       <p className="text-gray-400 mb-8 max-w-md text-lg">
-        The polling booth you&apos;re looking for seems to have been relocated.
-        Let&apos;s get you back to {APP_NAME}.
+        The polling booth you&apos;re looking for seems to have been relocated. Let&apos;s get you
+        back to {APP_NAME}.
       </p>
       <Link
         href="/"

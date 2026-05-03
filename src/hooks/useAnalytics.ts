@@ -17,10 +17,7 @@ export function useAnalytics() {
     (language: string) => analyticsEvents.chatMessage(language),
     [],
   );
-  const trackToolUsed = useCallback(
-    (toolName: string) => analyticsEvents.toolUsed(toolName),
-    [],
-  );
+  const trackToolUsed = useCallback((toolName: string) => analyticsEvents.toolUsed(toolName), []);
   const trackVoiceInput = useCallback(() => analyticsEvents.voiceInput(), []);
   const trackTTSPlayed = useCallback(() => analyticsEvents.ttsPlayed(), []);
   const trackLanguageChanged = useCallback(

@@ -34,7 +34,9 @@ export function ChatInterface() {
     const announcer = document.getElementById("sr-announcer");
     if (announcer) {
       announcer.textContent = text;
-      setTimeout(() => { announcer.textContent = ""; }, 1000);
+      setTimeout(() => {
+        announcer.textContent = "";
+      }, 1000);
     }
   };
 
@@ -166,13 +168,11 @@ export function ChatInterface() {
       >
         {showWelcome && (
           <div className="flex flex-col items-center justify-center h-full text-center px-4 animate-fade-in-up">
-            <div className="text-6xl mb-4" role="img" aria-label="Ballot box emoji">🗳️</div>
-            <h2 className="text-2xl font-bold text-white mb-2">
-              {t("welcome.title", language)}
-            </h2>
-            <p className="text-gray-400 mb-8 max-w-md">
-              {t("welcome.subtitle", language)}
-            </p>
+            <div className="text-6xl mb-4" role="img" aria-label="Ballot box emoji">
+              🗳️
+            </div>
+            <h2 className="text-2xl font-bold text-white mb-2">{t("welcome.title", language)}</h2>
+            <p className="text-gray-400 mb-8 max-w-md">{t("welcome.subtitle", language)}</p>
 
             {/* Suggestion Chips */}
             <div
@@ -208,9 +208,18 @@ export function ChatInterface() {
             aria-label="Loading response"
           >
             <div className="flex gap-1" aria-hidden="true">
-              <span className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-              <span className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-              <span className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+              <span
+                className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce"
+                style={{ animationDelay: "0ms" }}
+              />
+              <span
+                className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce"
+                style={{ animationDelay: "150ms" }}
+              />
+              <span
+                className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce"
+                style={{ animationDelay: "300ms" }}
+              />
             </div>
             <span>{t("chat.thinking", language)}</span>
           </div>
@@ -221,11 +230,7 @@ export function ChatInterface() {
 
       {/* Input Area */}
       <div className="border-t border-white/10 bg-slate-900/80 backdrop-blur-sm p-4">
-        <form
-          id="chat-form"
-          onSubmit={onSubmit}
-          className="max-w-4xl mx-auto flex items-end gap-2"
-        >
+        <form id="chat-form" onSubmit={onSubmit} className="max-w-4xl mx-auto flex items-end gap-2">
           <div className="flex-1 relative">
             <textarea
               ref={inputRef}
@@ -240,7 +245,11 @@ export function ChatInterface() {
               aria-describedby="char-count"
               disabled={isLoading}
             />
-            <span id="char-count" className="absolute bottom-1 right-3 text-xs text-gray-600" aria-live="off">
+            <span
+              id="char-count"
+              className="absolute bottom-1 right-3 text-xs text-gray-600"
+              aria-live="off"
+            >
               {input.length}/{MAX_MESSAGE_LENGTH}
             </span>
           </div>

@@ -73,6 +73,7 @@
 **File**: `src/middleware.ts`
 
 ### Rate Limiting
+
 - **Algorithm**: Sliding window counter per IP address
 - **Limit**: 30 requests per 60-second window on `/api/*` routes
 - **Key extraction**: `x-forwarded-for` header (Cloud Run compatible)
@@ -90,47 +91,53 @@ if (request.nextUrl.pathname.startsWith("/api/")) {
 ```
 
 ### Path Matcher
+
 The middleware excludes static assets from processing for performance:
+
 ```typescript
-matcher: ["/((?!_next/static|_next/image|favicon.ico|icons|manifest.json|offline.html).*)"]
+matcher: ["/((?!_next/static|_next/image|favicon.ico|icons|manifest.json|offline.html).*)"];
 ```
 
 ---
 
 ## Layer 2: Transport Security
 
-| Measure | Configuration | Purpose |
-|---------|--------------|---------|
-| **HSTS** | `max-age=63072000; includeSubDomains; preload` | Enforce HTTPS for 2 years |
-| **Preload List** | Eligible for browser preload list inclusion | HTTPS before first request |
-| **Cloud Run TLS** | Automatic TLS termination | Zero-config HTTPS |
+| Measure           | Configuration                                  | Purpose                    |
+| ----------------- | ---------------------------------------------- | -------------------------- |
+| **HSTS**          | `max-age=63072000; includeSubDomains; preload` | Enforce HTTPS for 2 years  |
+| **Preload List**  | Eligible for browser preload list inclusion    | HTTPS before first request |
+| **Cloud Run TLS** | Automatic TLS termination                      | Zero-config HTTPS          |
 
 ---
 
 ## Layer 3: Input Validation & Sanitization
 
 ### Zod Schema Validation
+
 Every data boundary uses strict Zod schemas that **reject unknown fields**:
 
 ```typescript
 // .strict() prevents prototype pollution and data injection
-export const chatMessageSchema = z.object({
-  content: z.string().min(1).max(2000),
-  language: z.enum(["en", "hi", "mr"]).default("en"),
-}).strict();
+export const chatMessageSchema = z
+  .object({
+    content: z.string().min(1).max(2000),
+    language: z.enum(["en", "hi", "mr"]).default("en"),
+  })
+  .strict();
 ```
 
 ### XSS Sanitization
+
 The `sanitizeInput()` function neutralizes 6 attack vector categories:
 
-| Vector | Pattern | Action |
-|--------|---------|--------|
-| **HTML Tags** | `<script>`, `<img>`, `<iframe>` | Strip all `<...>` patterns |
-| **JS Protocol** | `javascript:alert()` | Remove `javascript:` prefix |
-| **VBS Protocol** | `vbscript:MsgBox` | Remove `vbscript:` prefix |
-| **Data URIs** | `data:text/html,...` | Remove `data:` prefix |
-| **Event Handlers** | `onload=`, `onerror=`, `onclick=` | Remove `on*=` patterns |
-| **Whitespace** | Leading/trailing spaces | Trim output |
+| Vector             | Pattern                           | Action                      |
+| ------------------ | --------------------------------- | --------------------------- |
+| **HTML Tags**      | `<script>`, `<img>`, `<iframe>`   | Strip all `<...>` patterns  |
+| **JS Protocol**    | `javascript:alert()`              | Remove `javascript:` prefix |
+| **VBS Protocol**   | `vbscript:MsgBox`                 | Remove `vbscript:` prefix   |
+| **Data URIs**      | `data:text/html,...`              | Remove `data:` prefix       |
+| **Event Handlers** | `onload=`, `onerror=`, `onclick=` | Remove `on*=` patterns      |
+| **Whitespace**     | Leading/trailing spaces           | Trim output                 |
 
 ---
 
@@ -155,12 +162,12 @@ frame-ancestors 'none';
 
 **Service**: Google reCAPTCHA v3
 
-| Setting | Value | Purpose |
-|---------|-------|---------|
-| **Score Threshold** | ≥ 0.5 | Block likely bots |
-| **Action Validation** | Per-endpoint | Prevent token reuse |
-| **Fallback** | Allow all when not configured | Graceful degradation |
-| **User Impact** | Zero friction | No CAPTCHA challenges |
+| Setting               | Value                         | Purpose               |
+| --------------------- | ----------------------------- | --------------------- |
+| **Score Threshold**   | ≥ 0.5                         | Block likely bots     |
+| **Action Validation** | Per-endpoint                  | Prevent token reuse   |
+| **Fallback**          | Allow all when not configured | Graceful degradation  |
+| **User Impact**       | Zero friction                 | No CAPTCHA challenges |
 
 ---
 
@@ -173,57 +180,57 @@ RUN adduser --system --uid 1001 nextjs
 USER nextjs  # Runs as unprivileged user
 ```
 
-| Measure | Implementation |
-|---------|---------------|
-| **Non-root execution** | UID 1001 `nextjs` user |
-| **Minimal image** | Alpine Linux base + standalone output |
-| **No shell access** | Distroless-compatible design |
+| Measure                  | Implementation                                       |
+| ------------------------ | ---------------------------------------------------- |
+| **Non-root execution**   | UID 1001 `nextjs` user                               |
+| **Minimal image**        | Alpine Linux base + standalone output                |
+| **No shell access**      | Distroless-compatible design                         |
 | **Read-only filesystem** | Compatible with Cloud Run --no-allow-unauthenticated |
-| **Port binding** | 8080 (Cloud Run native, non-privileged) |
+| **Port binding**         | 8080 (Cloud Run native, non-privileged)              |
 
 ---
 
 ## Layer 7: Data Protection
 
-| Principle | Implementation |
-|-----------|---------------|
-| **No PII Storage** | Chat messages are NOT persisted server-side |
-| **Minimal Collection** | Only feedback ratings and anonymous session IDs stored |
-| **Firebase Rules** | Firestore access controlled via server-side authentication |
-| **Env Var Secrets** | All API keys via environment variables, never in source |
-| **Git Ignore** | `.env*` files excluded from version control |
-| **Docker Ignore** | `.env*` files excluded from container images |
+| Principle              | Implementation                                             |
+| ---------------------- | ---------------------------------------------------------- |
+| **No PII Storage**     | Chat messages are NOT persisted server-side                |
+| **Minimal Collection** | Only feedback ratings and anonymous session IDs stored     |
+| **Firebase Rules**     | Firestore access controlled via server-side authentication |
+| **Env Var Secrets**    | All API keys via environment variables, never in source    |
+| **Git Ignore**         | `.env*` files excluded from version control                |
+| **Docker Ignore**      | `.env*` files excluded from container images               |
 
 ---
 
 ## Security Headers Matrix
 
-| Header | Value | OWASP Category |
-|--------|-------|----------------|
-| `Strict-Transport-Security` | `max-age=63072000; includeSubDomains; preload` | Transport |
-| `Content-Security-Policy` | 13-directive strict policy | Injection |
-| `X-Frame-Options` | `DENY` | Clickjacking |
-| `X-Content-Type-Options` | `nosniff` | MIME Sniffing |
-| `X-XSS-Protection` | `1; mode=block` | Reflected XSS |
-| `Referrer-Policy` | `strict-origin-when-cross-origin` | Information Leakage |
-| `Permissions-Policy` | `camera=(), microphone=(self), geolocation=()` | Feature Abuse |
-| `Cross-Origin-Opener-Policy` | `same-origin` | Side-channel |
+| Header                       | Value                                          | OWASP Category      |
+| ---------------------------- | ---------------------------------------------- | ------------------- |
+| `Strict-Transport-Security`  | `max-age=63072000; includeSubDomains; preload` | Transport           |
+| `Content-Security-Policy`    | 13-directive strict policy                     | Injection           |
+| `X-Frame-Options`            | `DENY`                                         | Clickjacking        |
+| `X-Content-Type-Options`     | `nosniff`                                      | MIME Sniffing       |
+| `X-XSS-Protection`           | `1; mode=block`                                | Reflected XSS       |
+| `Referrer-Policy`            | `strict-origin-when-cross-origin`              | Information Leakage |
+| `Permissions-Policy`         | `camera=(), microphone=(self), geolocation=()` | Feature Abuse       |
+| `Cross-Origin-Opener-Policy` | `same-origin`                                  | Side-channel        |
 
 ---
 
 ## Input Validation Matrix
 
-| Input Type | Schema | Max Length | Pattern |
-|------------|--------|-----------|---------|
-| Chat Message | `chatMessageSchema` | 2,000 chars | Any UTF-8 |
-| EPIC Number | `epicNumberSchema` | 10 chars | `[A-Z]{3}\d{7}` |
-| Aadhaar | `aadhaarSchema` | 12 chars | `\d{12}` |
-| Mobile | `mobileNumberSchema` | 10 chars | `[6-9]\d{9}` |
-| PIN Code | `pincodeSchema` | 6 chars | `\d{6}` |
-| OCR Image | File validation | 5 MB | JPEG/PNG/WebP |
-| TTS Text | Length check | 1,000 chars | Sanitized string |
-| Translation | Length check | 5,000 chars | Any UTF-8 |
-| Feedback | `feedbackSchema` | 500 chars | positive/negative |
+| Input Type   | Schema               | Max Length  | Pattern           |
+| ------------ | -------------------- | ----------- | ----------------- |
+| Chat Message | `chatMessageSchema`  | 2,000 chars | Any UTF-8         |
+| EPIC Number  | `epicNumberSchema`   | 10 chars    | `[A-Z]{3}\d{7}`   |
+| Aadhaar      | `aadhaarSchema`      | 12 chars    | `\d{12}`          |
+| Mobile       | `mobileNumberSchema` | 10 chars    | `[6-9]\d{9}`      |
+| PIN Code     | `pincodeSchema`      | 6 chars     | `\d{6}`           |
+| OCR Image    | File validation      | 5 MB        | JPEG/PNG/WebP     |
+| TTS Text     | Length check         | 1,000 chars | Sanitized string  |
+| Translation  | Length check         | 5,000 chars | Any UTF-8         |
+| Feedback     | `feedbackSchema`     | 500 chars   | positive/negative |
 
 ---
 
@@ -231,21 +238,21 @@ USER nextjs  # Runs as unprivileged user
 
 **Tested against 13 known XSS attack payloads** (see `src/__tests__/security/input-validation.test.ts`):
 
-| # | Payload | Status |
-|---|---------|--------|
-| 1 | `<script>alert("xss")</script>` | ✅ Neutralized |
-| 2 | `<img src=x onerror=alert(1)>` | ✅ Neutralized |
-| 3 | `<svg onload=alert(1)>` | ✅ Neutralized |
-| 4 | `javascript:alert(document.cookie)` | ✅ Neutralized |
-| 5 | `<iframe src="evil.com"></iframe>` | ✅ Neutralized |
-| 6 | `<a href="javascript:void(0)">` | ✅ Neutralized |
-| 7 | `data:text/html,<script>alert(1)</script>` | ✅ Neutralized |
-| 8 | `<div onmouseover="alert(1)">` | ✅ Neutralized |
-| 9 | `vbscript:MsgBox` | ✅ Neutralized |
-| 10 | `<input onfocus=alert(1) autofocus>` | ✅ Neutralized |
-| 11 | `<body onload=alert(1)>` | ✅ Neutralized |
-| 12 | `<marquee onstart=alert(1)>` | ✅ Neutralized |
-| 13 | HTML entity encoded payloads | ✅ Neutralized |
+| #   | Payload                                    | Status         |
+| --- | ------------------------------------------ | -------------- |
+| 1   | `<script>alert("xss")</script>`            | ✅ Neutralized |
+| 2   | `<img src=x onerror=alert(1)>`             | ✅ Neutralized |
+| 3   | `<svg onload=alert(1)>`                    | ✅ Neutralized |
+| 4   | `javascript:alert(document.cookie)`        | ✅ Neutralized |
+| 5   | `<iframe src="evil.com"></iframe>`         | ✅ Neutralized |
+| 6   | `<a href="javascript:void(0)">`            | ✅ Neutralized |
+| 7   | `data:text/html,<script>alert(1)</script>` | ✅ Neutralized |
+| 8   | `<div onmouseover="alert(1)">`             | ✅ Neutralized |
+| 9   | `vbscript:MsgBox`                          | ✅ Neutralized |
+| 10  | `<input onfocus=alert(1) autofocus>`       | ✅ Neutralized |
+| 11  | `<body onload=alert(1)>`                   | ✅ Neutralized |
+| 12  | `<marquee onstart=alert(1)>`               | ✅ Neutralized |
+| 13  | HTML entity encoded payloads               | ✅ Neutralized |
 
 ---
 

@@ -96,7 +96,8 @@ export const CONSTITUENCY_ROADMAP: ConstituencyRoadmap = {
     {
       id: "phase-1",
       title: "Election Announcement",
-      description: "The Election Commission announces the election schedule and Model Code of Conduct comes into effect.",
+      description:
+        "The Election Commission announces the election schedule and Model Code of Conduct comes into effect.",
       date: "45-60 days before polling",
       status: "completed",
       icon: "📢",
@@ -105,7 +106,8 @@ export const CONSTITUENCY_ROADMAP: ConstituencyRoadmap = {
       id: "phase-2",
       title: "Nomination Filing",
       description: "Candidates file their nomination papers with the Returning Officer.",
-      details: "Candidates must submit affidavits declaring assets, criminal cases, and educational qualifications.",
+      details:
+        "Candidates must submit affidavits declaring assets, criminal cases, and educational qualifications.",
       date: "30-35 days before polling",
       status: "completed",
       icon: "📝",
@@ -129,7 +131,8 @@ export const CONSTITUENCY_ROADMAP: ConstituencyRoadmap = {
     {
       id: "phase-5",
       title: "Campaign Period",
-      description: "Candidates campaign in their constituencies. Campaign must stop 48 hours before polling.",
+      description:
+        "Candidates campaign in their constituencies. Campaign must stop 48 hours before polling.",
       details: "No campaigning allowed 48 hours before polling day (silence period).",
       date: "2-25 days before polling",
       status: "upcoming",
@@ -169,7 +172,8 @@ export const CONSTITUENCY_ROADMAP: ConstituencyRoadmap = {
 /** Key facts about the Election Commission of India. */
 export const ECI_FACTS: FactCardOutput = {
   title: "Election Commission of India — Key Facts",
-  summary: "The ECI is an autonomous constitutional authority responsible for administering elections in India.",
+  summary:
+    "The ECI is an autonomous constitutional authority responsible for administering elections in India.",
   facts: [
     { label: "Established", value: "25 January 1950", icon: "📅" },
     { label: "Headquarters", value: "New Delhi", icon: "🏛️" },
@@ -281,7 +285,8 @@ export const DEFAULT_FORM6_OUTPUT: Form6WizardOutput = {
     {
       id: "req-3",
       label: "Ordinary Resident",
-      description: "You must be an ordinary resident of the constituency where you wish to register.",
+      description:
+        "You must be an ordinary resident of the constituency where you wish to register.",
       met: true,
       category: "residency",
     },
@@ -307,14 +312,42 @@ export const DEFAULT_FORM6_OUTPUT: Form6WizardOutput = {
 
 /** List of all Indian states and union territories. */
 export const INDIAN_STATES = [
-  "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
-  "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand",
-  "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur",
-  "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab",
-  "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura",
-  "Uttar Pradesh", "Uttarakhand", "West Bengal",
-  "Andaman & Nicobar Islands", "Chandigarh", "Dadra & Nagar Haveli and Daman & Diu",
-  "Delhi", "Jammu & Kashmir", "Ladakh", "Lakshadweep", "Puducherry",
+  "Andhra Pradesh",
+  "Arunachal Pradesh",
+  "Assam",
+  "Bihar",
+  "Chhattisgarh",
+  "Goa",
+  "Gujarat",
+  "Haryana",
+  "Himachal Pradesh",
+  "Jharkhand",
+  "Karnataka",
+  "Kerala",
+  "Madhya Pradesh",
+  "Maharashtra",
+  "Manipur",
+  "Meghalaya",
+  "Mizoram",
+  "Nagaland",
+  "Odisha",
+  "Punjab",
+  "Rajasthan",
+  "Sikkim",
+  "Tamil Nadu",
+  "Telangana",
+  "Tripura",
+  "Uttar Pradesh",
+  "Uttarakhand",
+  "West Bengal",
+  "Andaman & Nicobar Islands",
+  "Chandigarh",
+  "Dadra & Nagar Haveli and Daman & Diu",
+  "Delhi",
+  "Jammu & Kashmir",
+  "Ladakh",
+  "Lakshadweep",
+  "Puducherry",
 ] as const;
 
 /** Type for a valid Indian state or UT name. */
@@ -326,10 +359,8 @@ export type IndianState = (typeof INDIAN_STATES)[number];
 export const DEMO_INTENTS: Record<string, string> = {
   register:
     "To register as a voter in India, you need to fill Form 6 on the NVSP portal (nvsp.in). You'll need: Aadhaar card or other ID proof, address proof, passport photo, and age proof. You must be at least 18 years old on January 1st of the qualifying year.",
-  evm:
-    "The Electronic Voting Machine (EVM) is used in Indian elections. It has a Ballot Unit where you press the blue button next to your candidate's name. The Control Unit records votes. A VVPAT machine prints a slip showing your choice for 7 seconds for verification.",
-  vote:
-    "To vote in India: 1) Check your name in the electoral roll at nvsp.in 2) Go to your assigned polling booth on election day (7AM-6PM) 3) Carry your EPIC card or approved photo ID 4) Get ink on your finger 5) Enter the voting booth 6) Press the button next to your candidate 7) Verify on VVPAT.",
+  evm: "The Electronic Voting Machine (EVM) is used in Indian elections. It has a Ballot Unit where you press the blue button next to your candidate's name. The Control Unit records votes. A VVPAT machine prints a slip showing your choice for 7 seconds for verification.",
+  vote: "To vote in India: 1) Check your name in the electoral roll at nvsp.in 2) Go to your assigned polling booth on election day (7AM-6PM) 3) Carry your EPIC card or approved photo ID 4) Get ink on your finger 5) Enter the voting booth 6) Press the button next to your candidate 7) Verify on VVPAT.",
   form6:
     "Form 6 is the application form for new voter registration. You can fill it online at nvsp.in or submit it physically at your local ERO office. Required documents: ID proof (Aadhaar/Passport), address proof, passport photo, and age proof (birth certificate).",
   timeline:

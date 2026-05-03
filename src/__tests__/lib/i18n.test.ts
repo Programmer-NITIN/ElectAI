@@ -28,13 +28,25 @@ describe("t() — Translation function", () => {
 
   it("should translate all core UI strings", () => {
     const coreKeys = [
-      "welcome.title", "welcome.subtitle", "welcome.placeholder",
-      "chat.send", "chat.thinking", "chat.error", "chat.limit",
-      "header.title", "header.tagline",
-      "a11y.skip", "a11y.newMessage",
-      "feedback.positive", "feedback.negative",
-      "evm.title", "form6.title", "timeline.title", "checklist.title",
-      "ocr.title", "booth.title",
+      "welcome.title",
+      "welcome.subtitle",
+      "welcome.placeholder",
+      "chat.send",
+      "chat.thinking",
+      "chat.error",
+      "chat.limit",
+      "header.title",
+      "header.tagline",
+      "a11y.skip",
+      "a11y.newMessage",
+      "feedback.positive",
+      "feedback.negative",
+      "evm.title",
+      "form6.title",
+      "timeline.title",
+      "checklist.title",
+      "ocr.title",
+      "booth.title",
     ];
 
     for (const key of coreKeys) {
@@ -72,6 +84,12 @@ describe("getChips() — Suggestion chips", () => {
         expect(chip.length).toBeGreaterThan(5);
       }
     }
+  });
+
+  it("should fall back to English chips for unknown language", () => {
+    const chips = getChips("unknown" as Language);
+    expect(chips).toHaveLength(5);
+    expect(chips[0]).toBe("How do I register to vote?");
   });
 });
 

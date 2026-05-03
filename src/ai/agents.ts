@@ -78,7 +78,6 @@ export const AGENT_TEMPERATURES = {
 export function isApiKeyConfigured(): boolean {
   if (isVertexConfigured()) return true;
   return Boolean(
-    process.env.GOOGLE_GENERATIVE_AI_API_KEY &&
-    process.env.GOOGLE_GENERATIVE_AI_API_KEY.length > 0,
+    process.env.GOOGLE_GENERATIVE_AI_API_KEY && process.env.GOOGLE_GENERATIVE_AI_API_KEY.length > 0,
   );
 }

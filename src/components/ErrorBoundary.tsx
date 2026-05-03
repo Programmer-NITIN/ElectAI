@@ -51,9 +51,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
           aria-live="assertive"
         >
           <div className="text-4xl mb-4">😓</div>
-          <h2 className="text-xl font-semibold text-white mb-2">
-            Something went wrong
-          </h2>
+          <h2 className="text-xl font-semibold text-white mb-2">Something went wrong</h2>
           <p className="text-gray-400 mb-4 max-w-sm">
             An error occurred while loading this section. Please try again.
           </p>

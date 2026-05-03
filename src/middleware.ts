@@ -86,7 +86,5 @@ export function middleware(request: NextRequest) {
 
 /** Matcher — skip static assets and internal Next.js routes. */
 export const config = {
-  matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|icons|manifest.json|offline.html).*)",
-  ],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|icons|manifest.json|offline.html).*)"],
 };

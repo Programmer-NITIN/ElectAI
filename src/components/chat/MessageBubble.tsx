@@ -40,17 +40,13 @@ export function MessageBubble({ message }: MessageBubbleProps) {
         {/* Avatar */}
         <div className="flex items-center gap-2 mb-1">
           <span className="text-sm">{isUser ? "👤" : "🗳️"}</span>
-          <span className="text-xs font-medium opacity-70">
-            {isUser ? "You" : "ElectAI"}
-          </span>
+          <span className="text-xs font-medium opacity-70">{isUser ? "You" : "ElectAI"}</span>
         </div>
 
         {/* Content */}
         <div className="text-sm leading-relaxed prose prose-invert prose-sm max-w-none">
           {textContent ? (
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>
-              {textContent}
-            </ReactMarkdown>
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{textContent}</ReactMarkdown>
           ) : (
             <p>...</p>
           )}

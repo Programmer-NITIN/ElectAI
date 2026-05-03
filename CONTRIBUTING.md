@@ -53,13 +53,13 @@ src/
 
 ### Naming Conventions
 
-| Type | Convention | Example |
-|------|-----------|---------|
-| Files | `camelCase.ts` | `electionData.ts` |
-| Components | `PascalCase.tsx` | `ChatInterface.tsx` |
-| Constants | `SCREAMING_SNAKE_CASE` | `MAX_MESSAGE_LENGTH` |
-| Functions | `camelCase` | `sanitizeInput()` |
-| Interfaces | `PascalCase` | `ChatMessage` |
+| Type       | Convention             | Example              |
+| ---------- | ---------------------- | -------------------- |
+| Files      | `camelCase.ts`         | `electionData.ts`    |
+| Components | `PascalCase.tsx`       | `ChatInterface.tsx`  |
+| Constants  | `SCREAMING_SNAKE_CASE` | `MAX_MESSAGE_LENGTH` |
+| Functions  | `camelCase`            | `sanitizeInput()`    |
+| Interfaces | `PascalCase`           | `ChatMessage`        |
 
 ## Testing
 

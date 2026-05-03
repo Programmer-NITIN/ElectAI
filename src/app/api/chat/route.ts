@@ -46,14 +46,17 @@ function getMessageText(message: ChatMessage): string {
  * @returns Response object with JSON body and CORS headers
  */
 function errorResponse(message: string, status: number): Response {
-  return Response.json({ error: message }, {
-    status,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "POST, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type",
+  return Response.json(
+    { error: message },
+    {
+      status,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
+      },
     },
-  });
+  );
 }
 
 /**
@@ -109,10 +112,7 @@ export async function POST(request: Request) {
       });
 
       if (!validation.success) {
-        return errorResponse(
-          validation.error.issues[0]?.message || "Invalid message",
-          400,
-        );
+        return errorResponse(validation.error.issues[0]?.message || "Invalid message", 400);
       }
     }
 
@@ -130,13 +130,13 @@ export async function POST(request: Request) {
       const responseText =
         demoResponse?.[1] ||
         "Welcome to ElectAI! 🗳️ I can help you understand the Indian election process.\n\n" +
-        "Here are some topics I can help with:\n\n" +
-        "- **Voter Registration**: How to register, Form 6 requirements, eligibility\n" +
-        "- **EVM Voting**: Step-by-step EVM/VVPAT voting process\n" +
-        "- **Election Timeline**: Key phases from announcement to results\n" +
-        "- **Eligibility**: Age, citizenship, and documentation requirements\n" +
-        "- **Documents Needed**: Voter ID (EPIC), Aadhaar, and other accepted IDs\n\n" +
-        "Try asking one of the suggested questions to get started!";
+          "Here are some topics I can help with:\n\n" +
+          "- **Voter Registration**: How to register, Form 6 requirements, eligibility\n" +
+          "- **EVM Voting**: Step-by-step EVM/VVPAT voting process\n" +
+          "- **Election Timeline**: Key phases from announcement to results\n" +
+          "- **Eligibility**: Age, citizenship, and documentation requirements\n" +
+          "- **Documents Needed**: Voter ID (EPIC), Aadhaar, and other accepted IDs\n\n" +
+          "Try asking one of the suggested questions to get started!";
 
       // Stream the demo response using SSE format compatible with our frontend
       const encoder = new TextEncoder();
@@ -152,7 +152,7 @@ export async function POST(request: Request) {
         headers: {
           "Content-Type": "text/event-stream",
           "Cache-Control": "no-cache",
-          "Connection": "keep-alive",
+          Connection: "keep-alive",
           "Access-Control-Allow-Origin": "*",
         },
       });

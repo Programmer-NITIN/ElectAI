@@ -14,9 +14,7 @@ describe("Header", () => {
 
   it("should render the tagline", () => {
     render(<Header />);
-    expect(
-      screen.getByText("AI-Powered Election Process Education"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("AI-Powered Election Process Education")).toBeInTheDocument();
   });
 
   it("should render the language selector", () => {

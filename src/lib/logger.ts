@@ -64,20 +64,16 @@ function writeLog(severity: LogSeverity, message: string, meta?: Record<string, 
  */
 export const logger = {
   /** Debug-level log — verbose information for development. */
-  debug: (message: string, meta?: Record<string, unknown>) =>
-    writeLog("DEBUG", message, meta),
+  debug: (message: string, meta?: Record<string, unknown>) => writeLog("DEBUG", message, meta),
 
   /** Info-level log — routine operational messages. */
-  info: (message: string, meta?: Record<string, unknown>) =>
-    writeLog("INFO", message, meta),
+  info: (message: string, meta?: Record<string, unknown>) => writeLog("INFO", message, meta),
 
   /** Warning-level log — unexpected but non-critical issues. */
-  warn: (message: string, meta?: Record<string, unknown>) =>
-    writeLog("WARNING", message, meta),
+  warn: (message: string, meta?: Record<string, unknown>) => writeLog("WARNING", message, meta),
 
   /** Error-level log — failures that affect functionality. */
-  error: (message: string, meta?: Record<string, unknown>) =>
-    writeLog("ERROR", message, meta),
+  error: (message: string, meta?: Record<string, unknown>) => writeLog("ERROR", message, meta),
 
   /** Critical-level log — system-wide failures requiring immediate attention. */
   critical: (message: string, meta?: Record<string, unknown>) =>

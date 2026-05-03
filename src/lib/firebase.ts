@@ -27,7 +27,9 @@ export const isFirebaseConfigured = Boolean(firebaseConfig.apiKey && firebaseCon
 
 /** Firebase app singleton — reuses existing app if already initialized. */
 export const app: FirebaseApp | null = isFirebaseConfigured
-  ? getApps().length > 0 ? getApps()[0] : initializeApp(firebaseConfig)
+  ? getApps().length > 0
+    ? getApps()[0]
+    : initializeApp(firebaseConfig)
   : null;
 
 /** Firestore database instance. */

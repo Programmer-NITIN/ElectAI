@@ -41,7 +41,7 @@ describe("sanitizeInput() — XSS prevention", () => {
 
   it("should remove inline event handlers", () => {
     expect(sanitizeInput('onload=alert("test")')).toBe('alert("test")');
-    expect(sanitizeInput('onclick=steal()')).toBe('steal()');
+    expect(sanitizeInput("onclick=steal()")).toBe("steal()");
   });
 
   it("should remove data: URIs", () => {
@@ -108,5 +108,39 @@ describe("truncate()", () => {
     const longText = "B".repeat(200);
     const result = truncate(longText);
     expect(result.length).toBe(100);
+  });
+});
+
+describe("debounce()", () => {
+  jest.useFakeTimers();
+
+  it("should delay function execution", () => {
+    const fn = jest.fn();
+    const debounced = require("@/lib/utils").debounce(fn, 100);
+
+    debounced();
+    expect(fn).not.toHaveBeenCalled();
+
+    jest.advanceTimersByTime(50);
+    expect(fn).not.toHaveBeenCalled();
+
+    jest.advanceTimersByTime(50);
+    expect(fn).toHaveBeenCalledTimes(1);
+  });
+
+  it("should only execute once if called multiple times within delay", () => {
+    const fn = jest.fn();
+    const debounced = require("@/lib/utils").debounce(fn, 100);
+
+    debounced();
+    debounced();
+    debounced();
+
+    jest.advanceTimersByTime(100);
+    expect(fn).toHaveBeenCalledTimes(1);
+  });
+
+  afterAll(() => {
+    jest.useRealTimers();
   });
 });

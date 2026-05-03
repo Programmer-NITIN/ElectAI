@@ -40,6 +40,7 @@
 ### The Challenge
 
 India has **970+ million registered voters** across **543 Lok Sabha** and **4,000+ Assembly constituencies**. Yet:
+
 - **First-time voters** (18-22 age group) often lack understanding of the EVM voting process
 - **Rural citizens** face language barriers when accessing election information
 - **Registration confusion** — many eligible citizens don't know Form 6 requirements
@@ -48,6 +49,7 @@ India has **970+ million registered voters** across **543 Lok Sabha** and **4,00
 ### Our Solution
 
 ElectAI addresses these challenges through an **AI-powered conversational assistant** that provides:
+
 1. **Interactive, step-by-step education** via Generative UI components (not just text)
 2. **Multilingual access** in English, Hindi, and Marathi with Cloud Translation for 22+ languages
 3. **Voice accessibility** for users who cannot read/type via Cloud TTS + Speech Recognition
@@ -109,34 +111,37 @@ ElectAI addresses these challenges through an **AI-powered conversational assist
 ## ✨ Key Features
 
 ### AI-Powered Education
-| Feature | Description | Technology |
-|---------|-------------|------------|
-| 🤖 **Multi-Agent AI Chat** | 6 specialized agents with intent-based routing | Gemini 2.5 Pro + Vercel AI SDK |
-| 🗳️ **EVM Voting Simulator** | Interactive 8-step EVM/VVPAT walkthrough | Generative UI + React |
-| 📝 **Form 6 Registration Wizard** | Eligibility assessment with 5 requirement categories | Zod validation + React Hook Form |
-| 📅 **Election Timeline** | 8-phase roadmap with status indicators | Interactive Timeline component |
-| ✅ **Voter Checklist** | Priority-tagged registration steps with progress | Persistent checklist with links |
-| 📊 **ECI Fact Cards** | Official statistics with source citations | Grid layout with external sources |
+
+| Feature                           | Description                                          | Technology                        |
+| --------------------------------- | ---------------------------------------------------- | --------------------------------- |
+| 🤖 **Multi-Agent AI Chat**        | 6 specialized agents with intent-based routing       | Gemini 2.5 Pro + Vercel AI SDK    |
+| 🗳️ **EVM Voting Simulator**       | Interactive 8-step EVM/VVPAT walkthrough             | Generative UI + React             |
+| 📝 **Form 6 Registration Wizard** | Eligibility assessment with 5 requirement categories | Zod validation + React Hook Form  |
+| 📅 **Election Timeline**          | 8-phase roadmap with status indicators               | Interactive Timeline component    |
+| ✅ **Voter Checklist**            | Priority-tagged registration steps with progress     | Persistent checklist with links   |
+| 📊 **ECI Fact Cards**             | Official statistics with source citations            | Grid layout with external sources |
 
 ### Accessibility & Inclusion
-| Feature | Description | Standard |
-|---------|-------------|----------|
-| 🌐 **Trilingual UI** | English, Hindi (हिन्दी), Marathi (मराठी) | Custom i18n with 28+ keys per lang |
-| 🔊 **Voice Input** | Speak questions via Web Speech API | W3C Speech Recognition |
-| 🔈 **Voice Output** | AI reads responses aloud | Google Cloud TTS (Neural2) |
-| 🔍 **Voter ID Scanner** | OCR text extraction from EPIC cards | Google Cloud Vision API |
-| 🗺️ **Booth Finder** | Locate nearest polling station | Google Maps Embed + Directions |
-| ♿ **Full WCAG 2.1 AA** | Skip links, ARIA, focus traps, reduced motion | W3C WCAG 2.1 Level AA |
+
+| Feature                 | Description                                   | Standard                           |
+| ----------------------- | --------------------------------------------- | ---------------------------------- |
+| 🌐 **Trilingual UI**    | English, Hindi (हिन्दी), Marathi (मराठी)      | Custom i18n with 28+ keys per lang |
+| 🔊 **Voice Input**      | Speak questions via Web Speech API            | W3C Speech Recognition             |
+| 🔈 **Voice Output**     | AI reads responses aloud                      | Google Cloud TTS (Neural2)         |
+| 🔍 **Voter ID Scanner** | OCR text extraction from EPIC cards           | Google Cloud Vision API            |
+| 🗺️ **Booth Finder**     | Locate nearest polling station                | Google Maps Embed + Directions     |
+| ♿ **Full WCAG 2.1 AA** | Skip links, ARIA, focus traps, reduced motion | W3C WCAG 2.1 Level AA              |
 
 ### Production-Grade Infrastructure
-| Feature | Description | Implementation |
-|---------|-------------|----------------|
-| 🛡️ **Security Middleware** | Rate limiting + 8 security headers | Next.js Edge Middleware |
-| 🤖 **Bot Protection** | Frictionless score-based validation | Google reCAPTCHA v3 |
-| 📱 **PWA** | Installable, offline fallback page | next-pwa + Service Worker |
-| 📝 **Structured Logging** | JSON logs compatible with Cloud Logging | GCR auto-capture |
-| 🐳 **Containerized** | Multi-stage Docker, non-root user | Cloud Run optimized |
-| 🔒 **Zero Trust Input** | Every input validated with Zod `.strict()` | Runtime type safety |
+
+| Feature                    | Description                                | Implementation            |
+| -------------------------- | ------------------------------------------ | ------------------------- |
+| 🛡️ **Security Middleware** | Rate limiting + 8 security headers         | Next.js Edge Middleware   |
+| 🤖 **Bot Protection**      | Frictionless score-based validation        | Google reCAPTCHA v3       |
+| 📱 **PWA**                 | Installable, offline fallback page         | next-pwa + Service Worker |
+| 📝 **Structured Logging**  | JSON logs compatible with Cloud Logging    | GCR auto-capture          |
+| 🐳 **Containerized**       | Multi-stage Docker, non-root user          | Cloud Run optimized       |
+| 🔒 **Zero Trust Input**    | Every input validated with Zod `.strict()` | Runtime type safety       |
 
 ---
 
@@ -173,6 +178,7 @@ User Message
 ```
 
 ### Dual-Provider Resilience
+
 ```
 Priority 1: Google Vertex AI (Production — VPC, SLA, asia-south1)
      │ fails
@@ -191,20 +197,20 @@ Priority 3: Demo Mode (Zero-dependency — keyword matching + static ECI data)
 
 > Full details in [GOOGLE_SERVICES.md](GOOGLE_SERVICES.md)
 
-| # | Google Service | Purpose | Module | Fallback |
-|:-:|----------------|---------|--------|----------|
-| 1 | **Gemini 2.5 Pro** | AI chat, intent classification, Generative UI | `src/ai/agents.ts` | Demo mode |
-| 2 | **Google Vertex AI** | Production AI with enterprise SLA | `src/lib/google/vertex.ts` | AI Studio |
-| 3 | **Firebase Auth** | Google OAuth sign-in | `src/lib/firebase.ts` | Anonymous |
-| 4 | **Cloud Firestore** | Feedback, sessions, analytics storage | `src/lib/firebase.ts` | In-memory |
-| 5 | **Google Analytics 4** | 10 custom events for UX tracking | `src/lib/analytics.ts` | Silent no-op |
-| 6 | **Cloud Translation** | 22 Indian language real-time translation | `src/lib/google/translate.ts` | English only |
-| 7 | **Cloud TTS** | Neural2 voice synthesis (en/hi/mr) | `src/lib/google/tts.ts` | Web Speech API |
-| 8 | **Cloud Vision OCR** | Voter ID card field extraction | `src/lib/google/vision.ts` | Manual input |
-| 9 | **Cloud Logging** | Structured JSON production logs | `src/lib/google/logging.ts` | Console JSON |
-| 10 | **Google Maps** | Polling booth embed + directions | `src/lib/google/maps.ts` | Text directions |
-| 11 | **reCAPTCHA v3** | Score-based bot protection | `src/lib/google/recaptcha.ts` | Allow all |
-| 12 | **Google Fonts** | Inter variable font (display swap) | `src/app/layout.tsx` | System fonts |
+|  #  | Google Service         | Purpose                                       | Module                        | Fallback        |
+| :-: | ---------------------- | --------------------------------------------- | ----------------------------- | --------------- |
+|  1  | **Gemini 2.5 Pro**     | AI chat, intent classification, Generative UI | `src/ai/agents.ts`            | Demo mode       |
+|  2  | **Google Vertex AI**   | Production AI with enterprise SLA             | `src/lib/google/vertex.ts`    | AI Studio       |
+|  3  | **Firebase Auth**      | Google OAuth sign-in                          | `src/lib/firebase.ts`         | Anonymous       |
+|  4  | **Cloud Firestore**    | Feedback, sessions, analytics storage         | `src/lib/firebase.ts`         | In-memory       |
+|  5  | **Google Analytics 4** | 10 custom events for UX tracking              | `src/lib/analytics.ts`        | Silent no-op    |
+|  6  | **Cloud Translation**  | 22 Indian language real-time translation      | `src/lib/google/translate.ts` | English only    |
+|  7  | **Cloud TTS**          | Neural2 voice synthesis (en/hi/mr)            | `src/lib/google/tts.ts`       | Web Speech API  |
+|  8  | **Cloud Vision OCR**   | Voter ID card field extraction                | `src/lib/google/vision.ts`    | Manual input    |
+|  9  | **Cloud Logging**      | Structured JSON production logs               | `src/lib/google/logging.ts`   | Console JSON    |
+| 10  | **Google Maps**        | Polling booth embed + directions              | `src/lib/google/maps.ts`      | Text directions |
+| 11  | **reCAPTCHA v3**       | Score-based bot protection                    | `src/lib/google/recaptcha.ts` | Allow all       |
+| 12  | **Google Fonts**       | Inter variable font (display swap)            | `src/app/layout.tsx`          | System fonts    |
 
 ---
 
@@ -224,16 +230,16 @@ Layer 6: Container             → Non-root user (UID 1001) + standalone build
 Layer 7: Data                  → No PII persistence + Firebase Security Rules
 ```
 
-| Header | Value | Purpose |
-|--------|-------|---------|
-| `Strict-Transport-Security` | `max-age=63072000; includeSubDomains; preload` | Enforce HTTPS for 2 years |
-| `Content-Security-Policy` | Strict allowlist (13 directives) | Prevent code injection |
-| `X-Frame-Options` | `DENY` | Prevent clickjacking |
-| `X-Content-Type-Options` | `nosniff` | Prevent MIME sniffing |
-| `X-XSS-Protection` | `1; mode=block` | Legacy XSS filter |
-| `Referrer-Policy` | `strict-origin-when-cross-origin` | Control referrer leakage |
-| `Permissions-Policy` | `camera=(), microphone=(self)` | Restrict browser features |
-| `Cross-Origin-Opener-Policy` | `same-origin` | Isolate browsing context |
+| Header                       | Value                                          | Purpose                   |
+| ---------------------------- | ---------------------------------------------- | ------------------------- |
+| `Strict-Transport-Security`  | `max-age=63072000; includeSubDomains; preload` | Enforce HTTPS for 2 years |
+| `Content-Security-Policy`    | Strict allowlist (13 directives)               | Prevent code injection    |
+| `X-Frame-Options`            | `DENY`                                         | Prevent clickjacking      |
+| `X-Content-Type-Options`     | `nosniff`                                      | Prevent MIME sniffing     |
+| `X-XSS-Protection`           | `1; mode=block`                                | Legacy XSS filter         |
+| `Referrer-Policy`            | `strict-origin-when-cross-origin`              | Control referrer leakage  |
+| `Permissions-Policy`         | `camera=(), microphone=(self)`                 | Restrict browser features |
+| `Cross-Origin-Opener-Policy` | `same-origin`                                  | Isolate browsing context  |
 
 ---
 
@@ -267,60 +273,61 @@ npm run test:watch    # TDD watch mode
     └─────────────────────────────────────────┘
 ```
 
-| Category | Suites | Tests | Coverage Area |
-|----------|--------|-------|---------------|
-| **Schema Validation** | 1 | 40+ | EPIC, Aadhaar, mobile, Form 6, EVM, OCR, feedback |
-| **Security** | 1 | 12 | Rate limiting, 9 security headers, CORS |
-| **Utilities** | 1 | 20+ | `cn()`, `sanitizeInput()`, `formatDate()`, `truncate()`, recursive XSS |
-| **i18n** | 1 | 13 | 3 languages × 28 keys, chips, fallback chain |
-| **Components** | 5 | 29 | ErrorBoundary, Header, FeedbackButton, Error, NotFound |
-| **Constants** | 1 | 20 | All 30+ named constants validated |
-| **Edge Cases** | 1 | 13 | Demo mode, data integrity, 36 states/UTs |
-| **Accessibility** | 1 | 11 | ARIA roles, landmarks, labels, focus |
-| **Logger** | 1 | 10+ | 5 severity levels, JSON structure, metadata |
-| **Analytics** | 1 | 4 | Event tracking, graceful degradation |
-| **Firebase** | 1 | 3 | Module initialization, singleton pattern |
-| **Vertex AI** | 1 | 5 | Provider detection, dual-provider fallback |
+| Category              | Suites | Tests | Coverage Area                                                          |
+| --------------------- | ------ | ----- | ---------------------------------------------------------------------- |
+| **Schema Validation** | 1      | 40+   | EPIC, Aadhaar, mobile, Form 6, EVM, OCR, feedback                      |
+| **Security**          | 1      | 12    | Rate limiting, 9 security headers, CORS                                |
+| **Utilities**         | 1      | 20+   | `cn()`, `sanitizeInput()`, `formatDate()`, `truncate()`, recursive XSS |
+| **i18n**              | 1      | 13    | 3 languages × 28 keys, chips, fallback chain                           |
+| **Components**        | 5      | 29    | ErrorBoundary, Header, FeedbackButton, Error, NotFound                 |
+| **Constants**         | 1      | 20    | All 30+ named constants validated                                      |
+| **Edge Cases**        | 1      | 13    | Demo mode, data integrity, 36 states/UTs                               |
+| **Accessibility**     | 1      | 11    | ARIA roles, landmarks, labels, focus                                   |
+| **Logger**            | 1      | 10+   | 5 severity levels, JSON structure, metadata                            |
+| **Analytics**         | 1      | 4     | Event tracking, graceful degradation                                   |
+| **Firebase**          | 1      | 3     | Module initialization, singleton pattern                               |
+| **Vertex AI**         | 1      | 5     | Provider detection, dual-provider fallback                             |
 
 ---
 
 ## ♿ Accessibility (WCAG 2.1 AA)
 
-| Requirement | Implementation | Location |
-|-------------|---------------|----------|
-| **Skip Navigation** | "Skip to content" link, visible on focus | `layout.tsx` |
-| **ARIA Live Regions** | `aria-live="assertive"` for new messages | `layout.tsx` (#sr-announcer) |
-| **ARIA Roles** | `role="log"`, `role="alert"`, `role="region"` | All components |
-| **Focus Indicators** | `focus-visible` with 2px indigo outline | `globals.css` |
-| **Keyboard Navigation** | Enter to send, Shift+Enter for newline | `ChatInterface.tsx` |
-| **Reduced Motion** | `prefers-reduced-motion: reduce` → disables animations | `globals.css` |
-| **High Contrast** | `prefers-contrast: high` → solid borders | `globals.css` |
-| **Semantic HTML** | `<header>`, `<main>`, `<nav>`, `<article>` | All pages |
-| **Color Contrast** | 4.5:1+ ratio on all text | Tailwind palette |
-| **Screen Reader** | All images/icons have `aria-label` | All components |
-| **Print Styles** | Hides nav/buttons for print | `globals.css` |
-| **Language Attribute** | `<html lang="en" dir="ltr">` | `layout.tsx` |
+| Requirement             | Implementation                                         | Location                     |
+| ----------------------- | ------------------------------------------------------ | ---------------------------- |
+| **Skip Navigation**     | "Skip to content" link, visible on focus               | `layout.tsx`                 |
+| **ARIA Live Regions**   | `aria-live="assertive"` for new messages               | `layout.tsx` (#sr-announcer) |
+| **ARIA Roles**          | `role="log"`, `role="alert"`, `role="region"`          | All components               |
+| **Focus Indicators**    | `focus-visible` with 2px indigo outline                | `globals.css`                |
+| **Keyboard Navigation** | Enter to send, Shift+Enter for newline                 | `ChatInterface.tsx`          |
+| **Reduced Motion**      | `prefers-reduced-motion: reduce` → disables animations | `globals.css`                |
+| **High Contrast**       | `prefers-contrast: high` → solid borders               | `globals.css`                |
+| **Semantic HTML**       | `<header>`, `<main>`, `<nav>`, `<article>`             | All pages                    |
+| **Color Contrast**      | 4.5:1+ ratio on all text                               | Tailwind palette             |
+| **Screen Reader**       | All images/icons have `aria-label`                     | All components               |
+| **Print Styles**        | Hides nav/buttons for print                            | `globals.css`                |
+| **Language Attribute**  | `<html lang="en" dir="ltr">`                           | `layout.tsx`                 |
 
 ---
 
 ## ⚡ Performance Optimization
 
-| Technique | Implementation | Impact |
-|-----------|---------------|--------|
-| **Standalone Build** | `output: "standalone"` in next.config | 80% smaller Docker image |
-| **Font Optimization** | `next/font/google` with `display: swap` | Zero layout shift |
-| **Turbopack** | Enabled for development builds | 10x faster HMR |
-| **Code Splitting** | Automatic per-route splitting via App Router | Smaller initial bundle |
-| **Stream Responses** | AI responses streamed via `streamText()` | Instant first token |
-| **PWA Caching** | Service Worker with offline fallback | Works without network |
-| **Lazy Analytics** | Firebase Analytics loaded only when supported | No SSR overhead |
-| **Image Optimization** | `next/image` with automatic format/resize | WebP/AVIF serving |
+| Technique              | Implementation                                | Impact                   |
+| ---------------------- | --------------------------------------------- | ------------------------ |
+| **Standalone Build**   | `output: "standalone"` in next.config         | 80% smaller Docker image |
+| **Font Optimization**  | `next/font/google` with `display: swap`       | Zero layout shift        |
+| **Turbopack**          | Enabled for development builds                | 10x faster HMR           |
+| **Code Splitting**     | Automatic per-route splitting via App Router  | Smaller initial bundle   |
+| **Stream Responses**   | AI responses streamed via `streamText()`      | Instant first token      |
+| **PWA Caching**        | Service Worker with offline fallback          | Works without network    |
+| **Lazy Analytics**     | Firebase Analytics loaded only when supported | No SSR overhead          |
+| **Image Optimization** | `next/image` with automatic format/resize     | WebP/AVIF serving        |
 
 ---
 
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - **Node.js** 20+ and **npm** 10+
 - (Optional) [Google AI Studio API key](https://aistudio.google.com/apikey) for AI features
 
@@ -394,6 +401,7 @@ docker run -p 8080:8080 -e GOOGLE_GENERATIVE_AI_API_KEY=your_key electai
 ```
 
 ### Docker Security Features
+
 - **Multi-stage build** — deps → builder → runner (minimal final image)
 - **Non-root execution** — runs as `nextjs` user (UID 1001)
 - **Standalone output** — only production files copied to runner
@@ -465,38 +473,38 @@ ElectAI/
 
 ## 🛠️ Tech Stack
 
-| Layer | Technology | Version | Purpose |
-|-------|-----------|---------|---------|
-| **Framework** | Next.js (App Router) | 16.2 | Full-stack React framework |
-| **Language** | TypeScript (strict) | 5.x | Type-safe development |
-| **AI** | Vercel AI SDK + Gemini | 6.x | Streaming AI + Generative UI |
-| **Auth** | Firebase Authentication | 12.x | Google OAuth |
-| **Database** | Cloud Firestore | 12.x | NoSQL document storage |
-| **Styling** | Tailwind CSS 4 | 4.x | Utility-first CSS |
-| **Animation** | Framer Motion | 12.x | Micro-animations |
-| **Validation** | Zod | 4.x | Runtime schema validation |
-| **Testing** | Jest + React Testing Library | 30.x | Unit + component tests |
-| **Linting** | ESLint 9 + Prettier 3 | 9.x | Code quality enforcement |
-| **Icons** | Lucide React | 1.x | Consistent icon system |
-| **Markdown** | react-markdown + remark-gfm | 10.x | AI response rendering |
-| **Deployment** | Docker + Cloud Run | - | Containerized serverless |
+| Layer          | Technology                   | Version | Purpose                      |
+| -------------- | ---------------------------- | ------- | ---------------------------- |
+| **Framework**  | Next.js (App Router)         | 16.2    | Full-stack React framework   |
+| **Language**   | TypeScript (strict)          | 5.x     | Type-safe development        |
+| **AI**         | Vercel AI SDK + Gemini       | 6.x     | Streaming AI + Generative UI |
+| **Auth**       | Firebase Authentication      | 12.x    | Google OAuth                 |
+| **Database**   | Cloud Firestore              | 12.x    | NoSQL document storage       |
+| **Styling**    | Tailwind CSS 4               | 4.x     | Utility-first CSS            |
+| **Animation**  | Framer Motion                | 12.x    | Micro-animations             |
+| **Validation** | Zod                          | 4.x     | Runtime schema validation    |
+| **Testing**    | Jest + React Testing Library | 30.x    | Unit + component tests       |
+| **Linting**    | ESLint 9 + Prettier 3        | 9.x     | Code quality enforcement     |
+| **Icons**      | Lucide React                 | 1.x     | Consistent icon system       |
+| **Markdown**   | react-markdown + remark-gfm  | 10.x    | AI response rendering        |
+| **Deployment** | Docker + Cloud Run           | -       | Containerized serverless     |
 
 ---
 
 ## 📊 Code Quality Practices
 
-| Practice | Implementation |
-|----------|---------------|
-| **Zero magic numbers** | All values in `constants.ts` (30+ named constants) |
-| **Barrel exports** | `index.ts` in every directory for clean imports |
-| **Strict TypeScript** | `noUnusedLocals`, `noUnusedParameters`, `strict: true` |
-| **JSDoc on every export** | `@param`, `@returns`, `@example`, `@module` tags |
-| **Max ~200-line files** | Single responsibility principle enforced |
-| **EditorConfig + Prettier** | Consistent formatting across all editors/IDEs |
-| **Separation of concerns** | `ai/`, `lib/`, `hooks/`, `components/`, `types/` |
-| **Error boundaries** | React ErrorBoundary + global error.tsx |
-| **Type-safe schemas** | Zod `.strict()` prevents unknown field injection |
-| **No `any` types** | Explicit typing throughout the codebase |
+| Practice                    | Implementation                                         |
+| --------------------------- | ------------------------------------------------------ |
+| **Zero magic numbers**      | All values in `constants.ts` (30+ named constants)     |
+| **Barrel exports**          | `index.ts` in every directory for clean imports        |
+| **Strict TypeScript**       | `noUnusedLocals`, `noUnusedParameters`, `strict: true` |
+| **JSDoc on every export**   | `@param`, `@returns`, `@example`, `@module` tags       |
+| **Max ~200-line files**     | Single responsibility principle enforced               |
+| **EditorConfig + Prettier** | Consistent formatting across all editors/IDEs          |
+| **Separation of concerns**  | `ai/`, `lib/`, `hooks/`, `components/`, `types/`       |
+| **Error boundaries**        | React ErrorBoundary + global error.tsx                 |
+| **Type-safe schemas**       | Zod `.strict()` prevents unknown field injection       |
+| **No `any` types**          | Explicit typing throughout the codebase                |
 
 ---
 
