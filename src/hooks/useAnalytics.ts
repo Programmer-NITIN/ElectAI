@@ -1,9 +1,9 @@
+"use client";
+
 /**
  * Analytics hook for tracking user interactions via GA4.
  * @module hooks/useAnalytics
  */
-
-"use client";
 
 import { useCallback } from "react";
 import { analyticsEvents } from "@/lib/analytics";

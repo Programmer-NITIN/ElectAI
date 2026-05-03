@@ -53,7 +53,7 @@ export const chatMessageSchema = z.object({
   language: z.enum(["en", "hi", "mr"]).default("en"),
 }).strict();
 
-export type ChatMessage = z.infer<typeof chatMessageSchema>;
+export type ChatMessageInput = z.infer<typeof chatMessageSchema>;
 
 // ── Form 6 (New Voter Registration) ───────────────────────────────────
 

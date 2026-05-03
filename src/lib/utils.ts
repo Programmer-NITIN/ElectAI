@@ -46,8 +46,16 @@ export function cn(...inputs: ClassValue[]): string {
 export function sanitizeInput(input: string): string {
   if (typeof input !== "string") return "";
 
-  return input
-    .replace(/<[^>]*>/g, "") // Strip all HTML tags
+  let result = input;
+
+  // Recursively strip HTML tags (prevents nested bypass like <scr<script>ipt>)
+  let previous = "";
+  while (previous !== result) {
+    previous = result;
+    result = result.replace(/<[^>]*>/g, "");
+  }
+
+  return result
     .replace(/javascript:/gi, "") // Remove JS protocol
     .replace(/on\w+\s*=/gi, "") // Remove inline event handlers
     .replace(/data:/gi, "") // Remove data URIs

@@ -6,7 +6,7 @@
 [![TypeScript 5](https://img.shields.io/badge/TypeScript-5_Strict-3178C6?logo=typescript&logoColor=white)](https://typescriptlang.org/)
 [![Gemini 2.5 Pro](https://img.shields.io/badge/Gemini-2.5_Pro-4285F4?logo=google&logoColor=white)](https://ai.google.dev/)
 [![Firebase](https://img.shields.io/badge/Firebase-Auth+Firestore+Analytics-FFCA28?logo=firebase&logoColor=black)](https://firebase.google.com/)
-[![Tests](https://img.shields.io/badge/Tests-150%2B_Passing-brightgreen?logo=jest&logoColor=white)](TESTING.md)
+[![Tests](https://img.shields.io/badge/Tests-201_Passing-brightgreen?logo=jest&logoColor=white)](TESTING.md)
 [![WCAG 2.1 AA](https://img.shields.io/badge/Accessibility-WCAG_2.1_AA-blue?logo=accessibility&logoColor=white)](https://www.w3.org/WAI/WCAG21/quickref/)
 [![Cloud Run](https://img.shields.io/badge/Deploy-Cloud_Run-4285F4?logo=googlecloud&logoColor=white)](https://cloud.google.com/run)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
@@ -22,7 +22,7 @@
 - [Multi-Agent AI Architecture](#-multi-agent-ai-architecture)
 - [Google Services Integration (12 Services)](#-google-services-integration-12-services)
 - [Security Architecture](#-security-architecture)
-- [Testing Strategy (150+ Tests)](#-testing-strategy-150-tests)
+- [Testing Strategy (201 Tests)](#-testing-strategy-201-tests)
 - [Accessibility (WCAG 2.1 AA)](#-accessibility-wcag-21-aa)
 - [Performance Optimization](#-performance-optimization)
 - [Quick Start](#-quick-start)
@@ -237,13 +237,14 @@ Layer 7: Data                  → No PII persistence + Firebase Security Rules
 
 ---
 
-## 🧪 Testing Strategy (150+ Tests)
+## 🧪 Testing Strategy (201 Tests)
 
 > Full details in [TESTING.md](TESTING.md)
 
 ```bash
-npm test              # Run all 150+ tests
+npm test              # Run all 201 tests across 17 suites
 npm run test:coverage # Generate V8 coverage report
+npm run test:ci       # CI mode with coverage
 npm run test:watch    # TDD watch mode
 ```
 
@@ -252,12 +253,12 @@ npm run test:watch    # TDD watch mode
 ```
                     ┌─────────┐
                     │  E2E    │  Edge cases, demo mode, offline
-                   ─┤  (15+) ├─
+                   ─┤  (20+) ├─
                   / └─────────┘ \
                  /                \
            ┌──────────┐    ┌──────────┐
            │Component │    │ Security │  XSS vectors, rate limiting,
-           │  (20+)   │    │  (30+)   │  CSP headers, injection attacks
+           │  (30+)   │    │  (40+)   │  CSP headers, injection attacks
            └──────────┘    └──────────┘
           /                              \
     ┌─────────────────────────────────────────┐
@@ -268,16 +269,16 @@ npm run test:watch    # TDD watch mode
 
 | Category | Suites | Tests | Coverage Area |
 |----------|--------|-------|---------------|
-| **Schema Validation** | 12 | 40+ | EPIC, Aadhaar, mobile, Form 6, EVM, OCR, feedback |
-| **Security** | 2 | 30+ | 13 XSS payloads, SQL injection, rate limiting, 8 headers |
-| **Utilities** | 2 | 25+ | `cn()`, `sanitizeInput()`, `formatDate()`, `truncate()` |
-| **i18n** | 1 | 20+ | 3 languages × 28 keys, chips, fallback chain |
-| **Components** | 3 | 18+ | ErrorBoundary, Header, FeedbackButton |
-| **Constants** | 1 | 15+ | All 30+ named constants validated |
-| **Edge Cases** | 1 | 15+ | Demo mode, data integrity, 36 states/UTs |
-| **Accessibility** | 1 | 10+ | ARIA roles, landmarks, labels, focus |
+| **Schema Validation** | 1 | 40+ | EPIC, Aadhaar, mobile, Form 6, EVM, OCR, feedback |
+| **Security** | 1 | 12 | Rate limiting, 9 security headers, CORS |
+| **Utilities** | 1 | 20+ | `cn()`, `sanitizeInput()`, `formatDate()`, `truncate()`, recursive XSS |
+| **i18n** | 1 | 13 | 3 languages × 28 keys, chips, fallback chain |
+| **Components** | 5 | 29 | ErrorBoundary, Header, FeedbackButton, Error, NotFound |
+| **Constants** | 1 | 20 | All 30+ named constants validated |
+| **Edge Cases** | 1 | 13 | Demo mode, data integrity, 36 states/UTs |
+| **Accessibility** | 1 | 11 | ARIA roles, landmarks, labels, focus |
 | **Logger** | 1 | 10+ | 5 severity levels, JSON structure, metadata |
-| **Analytics** | 1 | 5 | Event tracking, graceful degradation |
+| **Analytics** | 1 | 4 | Event tracking, graceful degradation |
 | **Firebase** | 1 | 3 | Module initialization, singleton pattern |
 | **Vertex AI** | 1 | 5 | Provider detection, dual-provider fallback |
 
@@ -327,8 +328,8 @@ npm run test:watch    # TDD watch mode
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-team/electai.git
-cd electai
+git clone https://github.com/Programmer-NITIN/ElectAI.git
+cd ElectAI
 
 # Install dependencies
 npm install
@@ -448,11 +449,14 @@ ElectAI/
     │   ├── election-data.ts     # Rich ECI data + demo responses
     │   ├── firebase.ts          # Firebase singleton
     │   └── analytics.ts         # GA4 event wrapper
-    ├── types/speech.d.ts        # Web Speech API declarations
-    └── __tests__/               # 150+ tests across 5 categories
+    ├── types/                   # Shared type definitions
+    │   ├── chat.ts              # ChatMessage interface (shared)
+    │   ├── speech.d.ts          # Web Speech API declarations
+    │   └── index.ts             # Barrel export
+    └── __tests__/               # 201 tests across 17 suites
         ├── lib/                 # 8 unit test suites
-        ├── components/          # 3 component test suites
-        ├── security/            # 2 security test suites
+        ├── components/          # 5 component test suites
+        ├── security/            # 1 security/middleware suite
         ├── accessibility/       # 1 WCAG compliance suite
         └── edge-cases/          # 1 fallback + data integrity suite
 ```

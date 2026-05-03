@@ -78,6 +78,11 @@ describe("sanitizeInput() — XSS prevention", () => {
     expect(sanitizeInput("JAVASCRIPT:alert(1)")).toBe("alert(1)");
     expect(sanitizeInput("JavaScript:alert(1)")).toBe("alert(1)");
   });
+
+  it("should handle recursive/nested tag bypass attempts", () => {
+    expect(sanitizeInput("<scr<script>ipt>alert(1)</scr</script>ipt>")).not.toContain("<");
+    expect(sanitizeInput("<<b>script>alert(1)<</b>/script>")).not.toContain("<");
+  });
 });
 
 describe("formatDate()", () => {

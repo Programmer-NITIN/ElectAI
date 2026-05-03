@@ -1,6 +1,6 @@
 # 🧪 Testing Documentation — ElectAI
 
-> **ElectAI includes 150+ automated tests across 15 test suites, covering unit, component, security, accessibility, and edge-case testing. The test suite ensures correctness, security, and WCAG compliance at every layer of the application.**
+> **ElectAI includes 201 automated tests across 17 test suites, covering unit, component, security, accessibility, and edge-case testing. The test suite ensures correctness, security, and WCAG compliance at every layer of the application.**
 
 ---
 
@@ -116,7 +116,7 @@ src/__tests__/
 ### Basic Commands
 
 ```bash
-# Run all 150+ tests
+# Run all 201 tests across 17 suites
 npm test
 
 # Watch mode (TDD)
@@ -389,5 +389,5 @@ jobs:
 ---
 
 <p align="center">
-  <em>150+ tests. 15 suites. 5 categories. Zero untested vulnerabilities.</em>
+  <em>201 tests. 17 suites. 5 categories. Zero untested vulnerabilities.</em>
 </p>
