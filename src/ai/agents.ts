@@ -20,9 +20,15 @@ const vertexProvider = isVertexConfigured()
   ? createVertex({
       project: process.env.GOOGLE_VERTEX_PROJECT || "",
       location: process.env.GOOGLE_VERTEX_LOCATION || "asia-south1",
-      googleAuthOptions: process.env.GOOGLE_SERVICE_ACCOUNT_KEY
-        ? { credentials: JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY) }
-        : undefined,
+      googleAuthOptions: (() => {
+        if (!process.env.GOOGLE_SERVICE_ACCOUNT_KEY) return undefined;
+        try {
+          return { credentials: JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY) };
+        } catch {
+          // Invalid JSON in service account key — fall back to default auth
+          return undefined;
+        }
+      })(),
     })
   : null;
 

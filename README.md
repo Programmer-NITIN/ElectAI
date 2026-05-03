@@ -28,6 +28,7 @@
 - [Quick Start](#-quick-start)
 - [Deployment](#-deployment-google-cloud-run)
 - [Project Structure](#-project-structure)
+- [Architecture](ARCHITECTURE.md)
 - [Tech Stack](#-tech-stack)
 - [License](#-license)
 

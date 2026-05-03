@@ -1,3 +1,13 @@
+/**
+ * Jest test framework configuration for ElectAI.
+ *
+ * Uses next/jest for automatic Next.js integration including module resolution,
+ * environment setup, and SWC transpilation. Configures JSDOM for React component
+ * testing and V8 for coverage measurement.
+ *
+ * @module jest.config
+ */
+
 import type { Config } from "jest";
 import nextJest from "next/jest.js";
 

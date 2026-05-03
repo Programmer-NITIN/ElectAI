@@ -71,8 +71,9 @@ describe("ECI Facts", () => {
   });
 
   it("should have sources with URLs", () => {
-    expect(ECI_FACTS.sources.length).toBeGreaterThanOrEqual(1);
-    for (const source of ECI_FACTS.sources) {
+    expect(ECI_FACTS.sources).toBeDefined();
+    expect(ECI_FACTS.sources!.length).toBeGreaterThanOrEqual(1);
+    for (const source of ECI_FACTS.sources!) {
       expect(source.url).toMatch(/^https?:\/\//);
     }
   });

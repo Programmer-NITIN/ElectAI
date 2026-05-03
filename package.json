@@ -15,7 +15,8 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage --verbose",
     "test:ci": "jest --ci --coverage --verbose",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "validate": "npm run lint && npm run typecheck && npm run test:ci && npm run build"
   },
   "dependencies": {
     "@ai-sdk/google": "^3.0.64",

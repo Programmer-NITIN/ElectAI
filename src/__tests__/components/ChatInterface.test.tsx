@@ -3,7 +3,6 @@
  * @group unit
  */
 
-import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { ChatInterface } from "@/components/chat/ChatInterface";
 import { useVoiceInput } from "@/hooks/useVoiceInput";
@@ -71,7 +70,7 @@ describe("ChatInterface", () => {
       body: { getReader: () => ({ read: () => Promise.resolve({ done: true }) }) },
     });
 
-    (utils.parseStreamResponse as jest.Mock).mockImplementation(async (res, onChunk) => {
+    (utils.parseStreamResponse as jest.Mock).mockImplementation(async (_response, onChunk) => {
       onChunk("Thinking...");
       return "AI response";
     });
@@ -119,7 +118,7 @@ describe("ChatInterface", () => {
   });
 
   it("should handle voice input toggle", async () => {
-    let onResultCb: (text: string) => void;
+    let onResultCb: ((text: string) => void) | undefined;
     (useVoiceInput as jest.Mock).mockImplementation((cb) => {
       onResultCb = cb;
       return {
@@ -136,7 +135,7 @@ describe("ChatInterface", () => {
     expect(mockStartListening).toHaveBeenCalled();
 
     // simulate result
-    onResultCb("Test voice");
+    onResultCb?.("Test voice");
     const textarea = screen.getByRole("textbox", {
       name: "Type your message",
     }) as HTMLTextAreaElement;

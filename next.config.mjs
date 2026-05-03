@@ -1,3 +1,13 @@
+/**
+ * Next.js configuration for ElectAI.
+ *
+ * Configures PWA support, standalone output for Docker, HTTP security headers,
+ * and DNS prefetch optimization. Security headers are applied at the framework
+ * level as a complement to the Edge Middleware layer.
+ *
+ * @module next.config
+ */
+
 import withPWA from "next-pwa";
 
 const pwa = withPWA({
