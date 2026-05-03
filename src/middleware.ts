@@ -14,15 +14,26 @@ import { RATE_LIMIT_WINDOW_MS, MAX_REQUESTS_PER_WINDOW } from "@/lib/constants";
 
 // ── Rate Limiting ─────────────────────────────────────────────────────
 
+/** In-memory rate limit store — tracks request counts per client IP. */
 const requestCounts = new Map<string, { count: number; resetAt: number }>();
 
-/** Extracts client IP from request headers. */
+/**
+ * Extracts the client IP from the `x-forwarded-for` header.
+ *
+ * @param request - Incoming Next.js request
+ * @returns Client IP string, or "anonymous" if header is missing
+ */
 function getRateLimitKey(request: NextRequest): string {
   const forwarded = request.headers.get("x-forwarded-for");
   return forwarded?.split(",")[0]?.trim() || "anonymous";
 }
 
-/** Checks if a client has exceeded the rate limit. */
+/**
+ * Checks whether a client has exceeded the rate limit for the current window.
+ *
+ * @param key - Rate limit key (typically client IP)
+ * @returns True if the client is rate limited
+ */
 function isRateLimited(key: string): boolean {
   const now = Date.now();
   const entry = requestCounts.get(key);
@@ -38,7 +49,8 @@ function isRateLimited(key: string): boolean {
 
 // ── Security Headers ──────────────────────────────────────────────────
 
-const SECURITY_HEADERS: Record<string, string> = {
+/** Standard HTTP security headers applied to all responses. */
+const SECURITY_HEADERS: Readonly<Record<string, string>> = {
   "X-Content-Type-Options": "nosniff",
   "X-Frame-Options": "DENY",
   "X-XSS-Protection": "1; mode=block",
@@ -57,12 +69,17 @@ const SECURITY_HEADERS: Record<string, string> = {
   ].join("; "),
   "Cross-Origin-Opener-Policy": "same-origin",
   "Cross-Origin-Resource-Policy": "same-origin",
-} as const;
+};
 
 // ── Middleware ─────────────────────────────────────────────────────────
 
-/** Applies rate limiting and security headers to all requests. */
-export function middleware(request: NextRequest) {
+/**
+ * Applies rate limiting to API routes and security headers to all responses.
+ *
+ * @param request - Incoming Next.js request
+ * @returns Modified response with security headers, or 429 if rate limited
+ */
+export function middleware(request: NextRequest): NextResponse {
   // Rate limit API routes only
   if (request.nextUrl.pathname.startsWith("/api/")) {
     const key = getRateLimitKey(request);

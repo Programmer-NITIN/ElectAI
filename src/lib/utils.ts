@@ -102,3 +102,19 @@ export function debounce<T extends (...args: unknown[]) => void>(
     timer = setTimeout(() => fn(...args), delay);
   };
 }
+
+/**
+ * Announces text to screen readers via the global ARIA live region.
+ * Updates the `#sr-announcer` element's text content, then clears it
+ * after a short delay to allow the screen reader to read the message.
+ *
+ * @param text - The announcement text for screen readers
+ */
+export function announceToScreenReader(text: string): void {
+  const announcer = document.getElementById("sr-announcer");
+  if (!announcer) return;
+  announcer.textContent = text;
+  setTimeout(() => {
+    announcer.textContent = "";
+  }, 1000);
+}

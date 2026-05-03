@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ThumbsUp, ThumbsDown } from "lucide-react";
+import { logger } from "@/lib/logger";
 
 interface FeedbackButtonProps {
   messageId: string;
@@ -21,7 +22,7 @@ export function FeedbackButton({ messageId }: FeedbackButtonProps) {
   const handleFeedback = (rating: "positive" | "negative") => {
     setFeedback(rating);
     // Log feedback with message context for analytics correlation
-    console.debug(`[Feedback] ${rating} for message ${messageId}`);
+    logger.debug("User feedback submitted", { messageId, rating });
   };
 
   if (feedback) {

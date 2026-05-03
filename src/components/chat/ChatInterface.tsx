@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useCallback, type FormEvent } from "react"
 import { MessageBubble, type ChatMessage } from "./MessageBubble";
 import { getChips, t, type Language } from "@/lib/i18n";
 import { MAX_MESSAGE_LENGTH } from "@/lib/constants";
-import { sanitizeInput } from "@/lib/utils";
+import { sanitizeInput, announceToScreenReader } from "@/lib/utils";
 import { Send, Mic, Volume2 } from "lucide-react";
 
 /**
@@ -73,17 +73,6 @@ export function ChatInterface() {
     scrollToBottom();
   }, [messages, scrollToBottom]);
 
-  /** Announce text to screen readers via the live region. */
-  const announceToScreenReader = (text: string) => {
-    const announcer = document.getElementById("sr-announcer");
-    if (announcer) {
-      announcer.textContent = text;
-      setTimeout(() => {
-        announcer.textContent = "";
-      }, 1000);
-    }
-  };
-
   /** Handle sending a message to the API. */
   const sendMessage = async (text: string) => {
     const sanitized = sanitizeInput(text.trim());
@@ -141,11 +130,6 @@ export function ChatInterface() {
     }
   };
 
-  /** Handle suggestion chip click. */
-  const handleChipClick = (chipText: string) => {
-    sendMessage(chipText);
-  };
-
   /** Handle form submission. */
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -189,7 +173,7 @@ export function ChatInterface() {
               {chips.map((chip, index) => (
                 <button
                   key={index}
-                  onClick={() => handleChipClick(chip)}
+                  onClick={() => sendMessage(chip)}
                   className="px-4 py-2 bg-slate-800/60 hover:bg-slate-700/80 border border-white/10 hover:border-indigo-500/50 rounded-full text-sm text-gray-300 hover:text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   aria-label={`Ask: ${chip}`}
                   style={{ animationDelay: `${index * 80}ms` }}

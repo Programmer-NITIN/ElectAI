@@ -370,3 +370,14 @@ export const DEMO_INTENTS: Record<string, string> = {
   booth:
     "To find your polling booth: 1) Visit voterportal.eci.gov.in 2) Enter your EPIC number or search by name 3) Your booth details (name, address, booth number) will be displayed. You can also call 1950 for assistance.",
 };
+
+/** Default welcome response when no keyword matches in demo mode. */
+export const DEMO_DEFAULT_RESPONSE =
+  "Welcome to ElectAI! 🗳️ I can help you understand the Indian election process.\n\n" +
+  "Here are some topics I can help with:\n\n" +
+  "- **Voter Registration**: How to register, Form 6 requirements, eligibility\n" +
+  "- **EVM Voting**: Step-by-step EVM/VVPAT voting process\n" +
+  "- **Election Timeline**: Key phases from announcement to results\n" +
+  "- **Eligibility**: Age, citizenship, and documentation requirements\n" +
+  "- **Documents Needed**: Voter ID (EPIC), Aadhaar, and other accepted IDs\n\n" +
+  "Try asking one of the suggested questions to get started!";

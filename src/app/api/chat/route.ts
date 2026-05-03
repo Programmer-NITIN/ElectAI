@@ -16,7 +16,7 @@ import { electionTools } from "@/ai/tools";
 import { EXPLAINER_PROMPT } from "@/ai/system-prompts";
 import { chatMessageSchema } from "@/lib/schemas";
 import { MAX_CONVERSATION_LENGTH, APP_URL } from "@/lib/constants";
-import { DEMO_INTENTS } from "@/lib/election-data";
+import { DEMO_INTENTS, DEMO_DEFAULT_RESPONSE } from "@/lib/election-data";
 import { logger } from "@/lib/logger";
 import { sanitizeInput } from "@/lib/utils";
 import type { ChatMessage } from "@/types/chat";
@@ -82,6 +82,33 @@ function errorResponse(message: string, status: number): Response {
 }
 
 /**
+ * Matches user text against demo intent keywords.
+ *
+ * @param text - Lowercased, sanitized user input
+ * @returns The matching demo response or the default welcome text
+ */
+function matchDemoIntent(text: string): string {
+  const match = Object.entries(DEMO_INTENTS).find(([keyword]) => text.includes(keyword));
+  return match?.[1] ?? DEMO_DEFAULT_RESPONSE;
+}
+
+/**
+ * Creates a ReadableStream in AI SDK SSE format (`0:"text"`).
+ *
+ * @param text - The response text to stream
+ * @returns A ReadableStream encoding the text as an SSE event
+ */
+function createSSEStream(text: string): ReadableStream<Uint8Array> {
+  const encoder = new TextEncoder();
+  return new ReadableStream({
+    start(controller) {
+      controller.enqueue(encoder.encode(`0:${JSON.stringify(text)}\n`));
+      controller.close();
+    },
+  });
+}
+
+/**
  * OPTIONS /api/chat — CORS preflight handler.
  * Required for cross-origin requests from client applications.
  */
@@ -99,7 +126,7 @@ export function OPTIONS(): Response {
  * @param request - Incoming HTTP request with JSON body containing messages
  * @returns Streaming text response or error JSON
  */
-export async function POST(request: Request) {
+export async function POST(request: Request): Promise<Response> {
   try {
     // Safely parse JSON body — reject malformed payloads
     let body: unknown;
@@ -136,34 +163,10 @@ export async function POST(request: Request) {
     // Demo mode — keyword-based responses when no API key
     if (!isApiKeyConfigured()) {
       logger.info("Using demo mode (no API key)", { component: "chat" });
-      const userText = sanitizedText.toLowerCase();
 
-      const demoResponse = Object.entries(DEMO_INTENTS).find(([keyword]) =>
-        userText.includes(keyword),
-      );
+      const responseText = matchDemoIntent(sanitizedText.toLowerCase());
 
-      const responseText =
-        demoResponse?.[1] ||
-        "Welcome to ElectAI! 🗳️ I can help you understand the Indian election process.\n\n" +
-          "Here are some topics I can help with:\n\n" +
-          "- **Voter Registration**: How to register, Form 6 requirements, eligibility\n" +
-          "- **EVM Voting**: Step-by-step EVM/VVPAT voting process\n" +
-          "- **Election Timeline**: Key phases from announcement to results\n" +
-          "- **Eligibility**: Age, citizenship, and documentation requirements\n" +
-          "- **Documents Needed**: Voter ID (EPIC), Aadhaar, and other accepted IDs\n\n" +
-          "Try asking one of the suggested questions to get started!";
-
-      // Stream the demo response using SSE format compatible with our frontend
-      const encoder = new TextEncoder();
-      const stream = new ReadableStream({
-        start(controller) {
-          // Send text in SSE format: 0:"text"
-          controller.enqueue(encoder.encode(`0:${JSON.stringify(responseText)}\n`));
-          controller.close();
-        },
-      });
-
-      return new Response(stream, {
+      return new Response(createSSEStream(responseText), {
         headers: {
           "Content-Type": "text/event-stream",
           "Cache-Control": "no-cache",

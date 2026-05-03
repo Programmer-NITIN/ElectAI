@@ -18,7 +18,7 @@ import { isVertexConfigured } from "@/lib/google/vertex";
 
 const vertexProvider = isVertexConfigured()
   ? createVertex({
-      project: process.env.GOOGLE_VERTEX_PROJECT!,
+      project: process.env.GOOGLE_VERTEX_PROJECT || "",
       location: process.env.GOOGLE_VERTEX_LOCATION || "asia-south1",
       googleAuthOptions: process.env.GOOGLE_SERVICE_ACCOUNT_KEY
         ? { credentials: JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY) }

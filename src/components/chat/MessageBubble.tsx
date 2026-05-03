@@ -26,7 +26,7 @@ interface MessageBubbleProps {
  * @param props.language - Current display language for i18n
  * @returns A styled message bubble with avatar and optional feedback
  */
-export function MessageBubble({ message }: MessageBubbleProps) {
+export function MessageBubble({ message, language }: MessageBubbleProps) {
   const isUser = message.role === "user";
   const textContent = message.content || "";
 
@@ -50,7 +50,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
         </div>
 
         {/* Content */}
-        <div className="text-sm leading-relaxed prose prose-invert prose-sm max-w-none">
+        <div className="text-sm leading-relaxed prose prose-invert prose-sm max-w-none" lang={language}>
           {textContent ? (
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {DOMPurify.sanitize(textContent)}
