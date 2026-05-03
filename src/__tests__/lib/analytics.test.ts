@@ -27,17 +27,17 @@ describe("trackEvent()", () => {
   it("should call logEvent when analytics is configured", async () => {
     const mockGetAnalytics = getAnalyticsInstance as jest.Mock;
     const mockLogEvent = logEvent as jest.Mock;
-    
+
     mockGetAnalytics.mockResolvedValueOnce({}); // mock instance
     await trackEvent("test", { foo: "bar" });
-    
+
     expect(mockLogEvent).toHaveBeenCalledWith({}, "test", { foo: "bar" });
   });
 
   it("should silently ignore errors", async () => {
     const mockGetAnalytics = getAnalyticsInstance as jest.Mock;
     mockGetAnalytics.mockRejectedValueOnce(new Error("Firebase failed"));
-    
+
     await expect(trackEvent("test")).resolves.not.toThrow();
   });
 });

@@ -47,7 +47,9 @@ export function MessageBubble({ message }: MessageBubbleProps) {
         {/* Content */}
         <div className="text-sm leading-relaxed prose prose-invert prose-sm max-w-none">
           {textContent ? (
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{DOMPurify.sanitize(textContent)}</ReactMarkdown>
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {DOMPurify.sanitize(textContent)}
+            </ReactMarkdown>
           ) : (
             <p>...</p>
           )}

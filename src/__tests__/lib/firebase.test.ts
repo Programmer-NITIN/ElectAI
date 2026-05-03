@@ -38,15 +38,15 @@ describe("Firebase Module", () => {
   it("should reuse existing app if getApps() returns an app", () => {
     process.env.NEXT_PUBLIC_FIREBASE_API_KEY = "test";
     process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID = "test";
-    
+
     jest.mock("firebase/app", () => ({
       initializeApp: jest.fn(),
-      getApps: jest.fn().mockReturnValue([ { name: "[DEFAULT]" } ]),
+      getApps: jest.fn().mockReturnValue([{ name: "[DEFAULT]" }]),
     }));
-    
+
     const { app } = require("@/lib/firebase");
     expect(app).toEqual({ name: "[DEFAULT]" });
-    
+
     delete process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
     delete process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
   });

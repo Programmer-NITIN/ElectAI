@@ -45,7 +45,7 @@ describe("sanitizeInput() — XSS prevention", () => {
     // but the old function removed them. Let's ensure bare onXXX= is handled if we want to,
     // but for now let's just assert DOMPurify's behavior. Wait, if we didn't add the regex back,
     // then 'onload=alert("test")' will remain untouched.
-    expect(sanitizeInput('<img src="x" onerror="alert(1)">')).toBe('');
+    expect(sanitizeInput('<img src="x" onerror="alert(1)">')).toBe("");
   });
 
   it("should remove data: URIs", () => {

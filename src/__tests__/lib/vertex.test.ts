@@ -61,14 +61,14 @@ describe("Vertex AI Helper", () => {
   it("should log error if GOOGLE_SERVICE_ACCOUNT_KEY is invalid JSON", () => {
     process.env.GOOGLE_SERVICE_ACCOUNT_KEY = "invalid-json";
     const loggerSpy = jest.spyOn(logger, "error").mockImplementation(() => {});
-    
+
     const config = getVertexConfig();
     expect(config.credentials).toBeUndefined();
     expect(loggerSpy).toHaveBeenCalledWith(
       "Failed to parse service account key",
-      expect.objectContaining({ component: "vertex", error: expect.any(String) })
+      expect.objectContaining({ component: "vertex", error: expect.any(String) }),
     );
-    
+
     loggerSpy.mockRestore();
   });
 
@@ -78,13 +78,13 @@ describe("Vertex AI Helper", () => {
       throw "String error";
     });
     const loggerSpy = jest.spyOn(logger, "error").mockImplementation(() => {});
-    
+
     getVertexConfig();
     expect(loggerSpy).toHaveBeenCalledWith(
       "Failed to parse service account key",
-      expect.objectContaining({ error: "Invalid JSON" })
+      expect.objectContaining({ error: "Invalid JSON" }),
     );
-    
+
     jsonSpy.mockRestore();
     loggerSpy.mockRestore();
   });
@@ -100,7 +100,7 @@ describe("Vertex AI Helper", () => {
     process.env.GOOGLE_VERTEX_LOCATION = "test";
     expect(isVertexConfigured()).toBe(false);
   });
-  
+
   it("should return 'Google Vertex AI' when vertex is configured", () => {
     process.env.GOOGLE_VERTEX_PROJECT = "test";
     process.env.GOOGLE_VERTEX_LOCATION = "test";

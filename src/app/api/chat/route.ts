@@ -15,11 +15,39 @@ import { explainerModel, isApiKeyConfigured, AGENT_TEMPERATURES } from "@/ai/age
 import { electionTools } from "@/ai/tools";
 import { EXPLAINER_PROMPT } from "@/ai/system-prompts";
 import { chatMessageSchema } from "@/lib/schemas";
-import { MAX_CONVERSATION_LENGTH } from "@/lib/constants";
+import { MAX_CONVERSATION_LENGTH, APP_URL } from "@/lib/constants";
 import { DEMO_INTENTS } from "@/lib/election-data";
 import { logger } from "@/lib/logger";
 import { sanitizeInput } from "@/lib/utils";
 import type { ChatMessage } from "@/types/chat";
+import { z } from "zod";
+
+/** Runtime schema for validating the incoming messages array structure. */
+const messagesPayloadSchema = z.object({
+  messages: z
+    .array(
+      z.object({
+        id: z.string().optional(),
+        role: z.enum(["user", "assistant", "system", "tool"]),
+        content: z.string().optional().default(""),
+        parts: z
+          .array(z.object({ type: z.string(), text: z.string().optional() }))
+          .optional(),
+      }),
+    )
+    .min(1, "At least one message is required")
+    .max(MAX_CONVERSATION_LENGTH, "Conversation limit reached"),
+});
+
+/** Allowed CORS origin — restricts to the application's own domain. */
+const CORS_ORIGIN = APP_URL || "*";
+
+/** Standard CORS headers used across all responses. */
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": CORS_ORIGIN,
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+} as const;
 
 /**
  * Extract text content from a message.
@@ -50,11 +78,7 @@ function errorResponse(message: string, status: number): Response {
     { error: message },
     {
       status,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type",
-      },
+      headers: CORS_HEADERS,
     },
   );
 }
@@ -66,11 +90,7 @@ function errorResponse(message: string, status: number): Response {
 export function OPTIONS(): Response {
   return new Response(null, {
     status: 204,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "POST, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type",
-    },
+    headers: CORS_HEADERS,
   });
 }
 
@@ -91,16 +111,16 @@ export async function POST(request: Request) {
       return errorResponse("Malformed JSON in request body", 400);
     }
 
-    const { messages } = body as { messages: ChatMessage[] };
-
-    // Validate message count
-    if (!messages || messages.length === 0) {
-      return errorResponse("No messages provided", 400);
+    // Runtime validation of the messages array structure using Zod
+    const parsed = messagesPayloadSchema.safeParse(body);
+    if (!parsed.success) {
+      return errorResponse(
+        parsed.error.issues[0]?.message || "Invalid request payload",
+        400,
+      );
     }
 
-    if (messages.length > MAX_CONVERSATION_LENGTH) {
-      return errorResponse("Conversation limit reached. Please start a new chat.", 400);
-    }
+    const { messages } = parsed.data as { messages: ChatMessage[] };
 
     // Validate and sanitize the latest message
     const lastMessage = messages[messages.length - 1];
@@ -153,7 +173,8 @@ export async function POST(request: Request) {
           "Content-Type": "text/event-stream",
           "Cache-Control": "no-cache",
           Connection: "keep-alive",
-          "Access-Control-Allow-Origin": "*",
+          "X-Content-Type-Options": "nosniff",
+          ...CORS_HEADERS,
         },
       });
     }

@@ -15,12 +15,42 @@ import "@testing-library/jest-dom";
 
 // Mock isomorphic-dompurify globally since it uses ESM exports that Jest doesn't natively parse
 jest.mock("isomorphic-dompurify", () => {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const dompurify = require("dompurify");
-  return dompurify(window);
+  if (typeof window !== "undefined") {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const dompurify = require("dompurify");
+    return dompurify(window);
+  }
+  // In node environment, return a passthrough sanitizer
+  return {
+    sanitize: (input: string) => input,
+    isSupported: true,
+  };
 });
 
 const isBrowser = typeof window !== "undefined";
+
+/* ── Stream API polyfill (needed by AI SDK in jsdom) ───────────────── */
+if (typeof globalThis.TransformStream === "undefined") {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { TransformStream, ReadableStream, WritableStream } = require("stream/web");
+  Object.assign(globalThis, { TransformStream, ReadableStream, WritableStream });
+}
+
+/* ── TextEncoder/TextDecoder polyfill ───────────────────────────────── */
+if (typeof globalThis.TextEncoder === "undefined") {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { TextEncoder, TextDecoder } = require("util");
+  Object.assign(globalThis, { TextEncoder, TextDecoder });
+}
+
+/* ── ResizeObserver polyfill ────────────────────────────────────────── */
+if (typeof globalThis.ResizeObserver === "undefined") {
+  globalThis.ResizeObserver = class ResizeObserver {
+    observe = jest.fn();
+    unobserve = jest.fn();
+    disconnect = jest.fn();
+  } as unknown as typeof globalThis.ResizeObserver;
+}
 
 /* ── window.matchMedia ─────────────────────────────────────────────── */
 if (isBrowser) {
@@ -75,6 +105,23 @@ if (isBrowser) {
       removeEventListener: jest.fn(),
     },
   });
+
+  // Mock SpeechSynthesisUtterance constructor (used by useTTS hook)
+  if (!window.SpeechSynthesisUtterance) {
+    window.SpeechSynthesisUtterance = class MockSpeechSynthesisUtterance {
+      text = "";
+      lang = "";
+      rate = 1;
+      pitch = 1;
+      volume = 1;
+      voice = null;
+      onend: (() => void) | null = null;
+      onerror: (() => void) | null = null;
+      constructor(text?: string) {
+        this.text = text || "";
+      }
+    } as unknown as typeof SpeechSynthesisUtterance;
+  }
 }
 
 /* ── Web Speech API: SpeechRecognition ─────────────────────────────── */
@@ -108,6 +155,11 @@ if (isBrowser) {
     writable: true,
     value: jest.fn(),
   });
+
+  // Mock Element.prototype.scrollIntoView (used by ChatInterface's ref)
+  if (!Element.prototype.scrollIntoView) {
+    Element.prototype.scrollIntoView = jest.fn();
+  }
 }
 
 /* ── console.error / console.warn suppression for test environment ──── */

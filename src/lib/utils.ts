@@ -46,10 +46,10 @@ export function cn(...inputs: ClassValue[]): string {
  */
 export function sanitizeInput(input: string): string {
   if (typeof input !== "string") return "";
-  
+
   // Use DOMPurify to strip all HTML tags and prevent XSS
   const sanitized = DOMPurify.sanitize(input, { ALLOWED_TAGS: [] });
-  
+
   // Extra layer of regex to strip residual markdown or pseudo-protocols if any
   return sanitized
     .replace(/javascript:/gi, "")

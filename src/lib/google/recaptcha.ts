@@ -31,7 +31,7 @@ export async function verifyRecaptcha(
     const response = await fetch(RECAPTCHA_VERIFY_URL, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: `secret=${secretKey}&response=${token}`,
+      body: `secret=${encodeURIComponent(secretKey)}&response=${encodeURIComponent(token)}`,
     });
 
     const data = await response.json();

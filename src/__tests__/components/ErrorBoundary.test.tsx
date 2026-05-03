@@ -104,14 +104,14 @@ describe("ErrorBoundary", () => {
     const boundary = new ErrorBoundary({ children: null });
     // Mock logger.error to prevent actual logging during test
     const loggerSpy = jest.spyOn(logger, "error").mockImplementation(() => {});
-    
+
     boundary.componentDidCatch(new Error("Test"), {} as React.ErrorInfo);
-    
+
     expect(loggerSpy).toHaveBeenCalledWith(
       "React ErrorBoundary caught an error",
-      expect.objectContaining({ componentStack: "" })
+      expect.objectContaining({ componentStack: "" }),
     );
-    
+
     loggerSpy.mockRestore();
   });
 });
