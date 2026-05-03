@@ -118,3 +118,44 @@ export function announceToScreenReader(text: string): void {
     announcer.textContent = "";
   }, 1000);
 }
+
+/**
+ * Parses an SSE-formatted streaming response from the chat API.
+ * Extracts text content from AI SDK `0:"text"` formatted lines.
+ *
+ * @param response - The fetch Response with a readable body stream
+ * @param onChunk - Callback invoked with accumulated text after each chunk
+ * @returns The complete assembled response text
+ */
+export async function parseStreamResponse(
+  response: Response,
+  onChunk: (accumulated: string) => void,
+): Promise<string> {
+  const reader = response.body?.getReader();
+  const decoder = new TextDecoder();
+  let assembled = "";
+
+  if (!reader) return assembled;
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    const chunk = decoder.decode(value, { stream: true });
+    for (const line of chunk.split("\n")) {
+      if (!line.startsWith("0:")) continue;
+      try {
+        const text = JSON.parse(line.slice(2));
+        if (typeof text === "string") {
+          assembled += text;
+        }
+      } catch {
+        // Non-JSON line — skip silently
+      }
+    }
+
+    onChunk(assembled);
+  }
+
+  return assembled;
+}

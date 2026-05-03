@@ -151,3 +151,72 @@ describe("debounce()", () => {
     jest.useRealTimers();
   });
 });
+
+describe("parseStreamResponse()", () => {
+  it("should extract text from properly formatted SSE lines", async () => {
+    const encoder = new TextEncoder();
+    let streamReadCount = 0;
+    
+    // Create a mock stream reader
+    const mockReader = {
+      read: jest.fn().mockImplementation(() => {
+        if (streamReadCount === 0) {
+          streamReadCount++;
+          return Promise.resolve({
+            done: false,
+            value: encoder.encode('0:"Hello"\n0:" World"\n'),
+          });
+        }
+        return Promise.resolve({ done: true, value: undefined });
+      }),
+    };
+
+    const mockResponse = {
+      body: {
+        getReader: () => mockReader,
+      },
+    } as unknown as Response;
+
+    const onChunk = jest.fn();
+    const result = await require("@/lib/utils").parseStreamResponse(mockResponse, onChunk);
+
+    expect(result).toBe("Hello World");
+    expect(onChunk).toHaveBeenCalledWith("Hello World");
+  });
+
+  it("should handle empty or null readers", async () => {
+    const mockResponse = { body: null } as unknown as Response;
+    const onChunk = jest.fn();
+    const result = await require("@/lib/utils").parseStreamResponse(mockResponse, onChunk);
+    
+    expect(result).toBe("");
+    expect(onChunk).not.toHaveBeenCalled();
+  });
+
+  it("should ignore malformed or non-0: lines", async () => {
+    const encoder = new TextEncoder();
+    let streamReadCount = 0;
+    
+    const mockReader = {
+      read: jest.fn().mockImplementation(() => {
+        if (streamReadCount === 0) {
+          streamReadCount++;
+          return Promise.resolve({
+            done: false,
+            value: encoder.encode('invalid-line\n0:invalid-json\n0:"Valid"\n'),
+          });
+        }
+        return Promise.resolve({ done: true, value: undefined });
+      }),
+    };
+
+    const mockResponse = {
+      body: { getReader: () => mockReader },
+    } as unknown as Response;
+
+    const onChunk = jest.fn();
+    const result = await require("@/lib/utils").parseStreamResponse(mockResponse, onChunk);
+
+    expect(result).toBe("Valid");
+  });
+});

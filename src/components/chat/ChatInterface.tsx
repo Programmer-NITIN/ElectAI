@@ -4,49 +4,12 @@ import { useState, useRef, useEffect, useCallback, type FormEvent } from "react"
 import { MessageBubble, type ChatMessage } from "./MessageBubble";
 import { getChips, t, type Language } from "@/lib/i18n";
 import { MAX_MESSAGE_LENGTH } from "@/lib/constants";
-import { sanitizeInput, announceToScreenReader } from "@/lib/utils";
-import { Send, Mic, Volume2 } from "lucide-react";
+import { sanitizeInput, announceToScreenReader, parseStreamResponse } from "@/lib/utils";
+import { Send, Mic, Volume2, Square } from "lucide-react";
+import { useVoiceInput } from "@/hooks/useVoiceInput";
+import { useTTS } from "@/hooks/useTTS";
 
-/**
- * Parses an SSE-formatted streaming response from the chat API.
- * Extracts text content from AI SDK `0:"text"` formatted lines.
- *
- * @param response - The fetch Response with a readable body stream
- * @param onChunk - Callback invoked with accumulated text after each chunk
- * @returns The complete assembled response text
- */
-async function parseStreamResponse(
-  response: Response,
-  onChunk: (accumulated: string) => void,
-): Promise<string> {
-  const reader = response.body?.getReader();
-  const decoder = new TextDecoder();
-  let assembled = "";
 
-  if (!reader) return assembled;
-
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-
-    const chunk = decoder.decode(value, { stream: true });
-    for (const line of chunk.split("\n")) {
-      if (!line.startsWith("0:")) continue;
-      try {
-        const text = JSON.parse(line.slice(2));
-        if (typeof text === "string") {
-          assembled += text;
-        }
-      } catch {
-        // Non-JSON line — skip silently
-      }
-    }
-
-    onChunk(assembled);
-  }
-
-  return assembled;
-}
 
 /**
  * Main chat interface component.
@@ -63,6 +26,14 @@ export function ChatInterface() {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  // Voice Input Hook
+  const { isListening, startListening, stopListening } = useVoiceInput((transcript) => {
+    setInput((prev) => prev + (prev ? " " : "") + transcript);
+  });
+
+  // TTS Hook
+  const { isSpeaking, speak, stop: stopTTS } = useTTS();
 
   /** Auto-scroll to the latest message. */
   const scrollToBottom = useCallback(() => {
@@ -112,6 +83,9 @@ export function ChatInterface() {
           ...updatedMessages,
           { id: assistantId, role: "assistant", content: assistantText },
         ]);
+        
+        // Auto-read aloud if TTS is already active or we want to prompt
+        // Or simply wait for user to click the Read Aloud button.
       }
 
       announceToScreenReader(t("a11y.newMessage", language));
@@ -247,21 +221,43 @@ export function ChatInterface() {
           {/* Voice Input Button */}
           <button
             type="button"
-            className="p-3 rounded-xl bg-slate-800 border border-white/10 text-gray-400 hover:text-white hover:bg-slate-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            onClick={isListening ? stopListening : () => startListening(language)}
+            className={`p-3 rounded-xl border transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
+              isListening
+                ? "bg-red-500/20 border-red-500/50 text-red-400 hover:bg-red-500/30"
+                : "bg-slate-800 border-white/10 text-gray-400 hover:text-white hover:bg-slate-700"
+            }`}
             aria-label="Voice input"
-            title="Speak your question"
+            title={isListening ? "Stop listening" : "Speak your question"}
+            aria-pressed={isListening}
+            data-testid="voice-input-btn"
           >
-            <Mic size={18} />
+            {isListening ? <Square size={18} /> : <Mic size={18} />}
           </button>
 
           {/* TTS Button */}
           <button
             type="button"
-            className="p-3 rounded-xl bg-slate-800 border border-white/10 text-gray-400 hover:text-white hover:bg-slate-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            onClick={() => {
+              if (isSpeaking) {
+                stopTTS();
+              } else {
+                const lastAssistantMsg = [...messages].reverse().find(m => m.role === "assistant");
+                if (lastAssistantMsg) speak(lastAssistantMsg.content, language);
+              }
+            }}
+            disabled={messages.length === 0}
+            className={`p-3 rounded-xl border transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed ${
+              isSpeaking
+                ? "bg-indigo-500/20 border-indigo-500/50 text-indigo-400 hover:bg-indigo-500/30"
+                : "bg-slate-800 border-white/10 text-gray-400 hover:text-white hover:bg-slate-700"
+            }`}
             aria-label="Read aloud"
-            title="Listen to response"
+            title={isSpeaking ? "Stop reading" : "Listen to response"}
+            aria-pressed={isSpeaking}
+            data-testid="tts-btn"
           >
-            <Volume2 size={18} />
+            {isSpeaking ? <Square size={18} /> : <Volume2 size={18} />}
           </button>
 
           {/* Send Button */}
