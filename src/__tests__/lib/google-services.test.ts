@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 /**
  * Tests for Google Cloud service wrappers.
  * Validates availability checks, input validation, and graceful fallbacks.
@@ -103,7 +104,7 @@ describe("Google reCAPTCHA", () => {
     const origSite = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
     process.env.RECAPTCHA_SECRET_KEY = "test-secret";
     process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY = "test-site";
-    
+
     // Mock the fetch
     global.fetch = jest.fn().mockResolvedValue({
       json: jest.fn().mockResolvedValue({
@@ -116,7 +117,7 @@ describe("Google reCAPTCHA", () => {
     const recaptcha = require("@/lib/google/recaptcha");
     const result = await recaptcha.verifyRecaptcha("fake-token");
     expect(result).toEqual({ success: true, score: 0.9 });
-    
+
     if (original) process.env.RECAPTCHA_SECRET_KEY = original;
     else delete process.env.RECAPTCHA_SECRET_KEY;
     if (origSite) process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY = origSite;
@@ -129,13 +130,13 @@ describe("Google reCAPTCHA", () => {
     const origSite = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
     process.env.RECAPTCHA_SECRET_KEY = "test-secret";
     process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY = "test-site";
-    
+
     global.fetch = jest.fn().mockRejectedValue(new Error("Network failure"));
 
     const recaptcha = require("@/lib/google/recaptcha");
     const result = await recaptcha.verifyRecaptcha("fake-token");
     expect(result).toEqual({ success: false, score: 0 });
-    
+
     if (original) process.env.RECAPTCHA_SECRET_KEY = original;
     else delete process.env.RECAPTCHA_SECRET_KEY;
     if (origSite) process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY = origSite;
@@ -201,9 +202,11 @@ describe("Google Translate", () => {
         v3: {
           TranslationServiceClient: jest.fn().mockImplementation(() => ({
             projectLocationPath: jest.fn().mockReturnValue("projects/test/locations/global"),
-            translateText: jest.fn().mockResolvedValue([{ translations: [{ translatedText: "नमस्ते" }] }]),
-          }))
-        }
+            translateText: jest
+              .fn()
+              .mockResolvedValue([{ translations: [{ translatedText: "नमस्ते" }] }]),
+          })),
+        },
       };
     });
 
@@ -229,8 +232,8 @@ describe("Google Translate", () => {
         TranslationServiceClient: jest.fn().mockImplementation(() => ({
           projectLocationPath: jest.fn().mockReturnValue("path"),
           translateText: jest.fn().mockRejectedValue(new Error("Translation Error")),
-        }))
-      }
+        })),
+      },
     }));
 
     const result = await require("@/lib/google/translate").translateText("Hello", "hi");
@@ -269,7 +272,7 @@ describe("Google TTS", () => {
     jest.resetModules();
     const original = process.env.GOOGLE_APPLICATION_CREDENTIALS;
     process.env.GOOGLE_APPLICATION_CREDENTIALS = "test";
-    
+
     jest.mock("@google-cloud/text-to-speech", () => {
       return {
         TextToSpeechClient: jest.fn().mockImplementation(() => ({
@@ -281,7 +284,7 @@ describe("Google TTS", () => {
     const tts = require("@/lib/google/tts");
     const result = await tts.synthesizeSpeech("Hello", "en-IN");
     expect(result).toBeNull();
-    
+
     if (original) process.env.GOOGLE_APPLICATION_CREDENTIALS = original;
     else delete process.env.GOOGLE_APPLICATION_CREDENTIALS;
   });
@@ -289,11 +292,13 @@ describe("Google TTS", () => {
     jest.resetModules();
     const original = process.env.GOOGLE_APPLICATION_CREDENTIALS;
     process.env.GOOGLE_APPLICATION_CREDENTIALS = "test";
-    
+
     jest.mock("@google-cloud/text-to-speech", () => {
       return {
         TextToSpeechClient: jest.fn().mockImplementation(() => ({
-          synthesizeSpeech: jest.fn().mockResolvedValue([{ audioContent: new Uint8Array([1, 2, 3]) }]),
+          synthesizeSpeech: jest
+            .fn()
+            .mockResolvedValue([{ audioContent: new Uint8Array([1, 2, 3]) }]),
         })),
       };
     });
@@ -301,7 +306,7 @@ describe("Google TTS", () => {
     const tts = require("@/lib/google/tts");
     const result = await tts.synthesizeSpeech("Hello", "en");
     expect(result).toBe(Buffer.from(new Uint8Array([1, 2, 3])).toString("base64"));
-    
+
     if (original) process.env.GOOGLE_APPLICATION_CREDENTIALS = original;
     else delete process.env.GOOGLE_APPLICATION_CREDENTIALS;
   });
@@ -360,12 +365,14 @@ describe("Google Cloud Vision", () => {
     jest.mock("@google-cloud/vision", () => {
       return {
         ImageAnnotatorClient: jest.fn().mockImplementation(() => ({
-          textDetection: jest.fn().mockResolvedValue([{
-            fullTextAnnotation: {
-              text: "ELECTION COMMISSION OF INDIA\nName: Rahul\nAge: 25\nSex: Male",
-              pages: [{ confidence: 0.95 }]
-            }
-          }]),
+          textDetection: jest.fn().mockResolvedValue([
+            {
+              fullTextAnnotation: {
+                text: "ELECTION COMMISSION OF INDIA\nName: Rahul\nAge: 25\nSex: Male",
+                pages: [{ confidence: 0.95 }],
+              },
+            },
+          ]),
         })),
       };
     });
@@ -427,7 +434,7 @@ describe("Google Cloud Logging", () => {
     jest.resetModules();
     const original = process.env.K_SERVICE;
     process.env.K_SERVICE = "test";
-    
+
     const writeMock = jest.fn().mockResolvedValue(undefined);
     jest.mock("@google-cloud/logging", () => {
       return {
@@ -440,23 +447,27 @@ describe("Google Cloud Logging", () => {
       };
     });
 
-    await expect(require("@/lib/google/logging").writeCloudLog("test", "INFO", "msg")).resolves.toBeUndefined();
+    await expect(
+      require("@/lib/google/logging").writeCloudLog("test", "INFO", "msg"),
+    ).resolves.toBeUndefined();
     expect(writeMock).toHaveBeenCalled();
-    
+
     if (original) process.env.K_SERVICE = original;
     else delete process.env.K_SERVICE;
   });
   it("writeCloudLog should do nothing if unavailable", async () => {
     const original = process.env.K_SERVICE;
     delete process.env.K_SERVICE;
-    await expect(require("@/lib/google/logging").writeCloudLog("test", "INFO", "msg")).resolves.toBeUndefined();
+    await expect(
+      require("@/lib/google/logging").writeCloudLog("test", "INFO", "msg"),
+    ).resolves.toBeUndefined();
     if (original) process.env.K_SERVICE = original;
   });
 
   it("writeCloudLog should handle logging errors", async () => {
     const original = process.env.K_SERVICE;
     process.env.K_SERVICE = "test";
-    
+
     jest.mock("@google-cloud/logging", () => {
       return {
         Logging: jest.fn().mockImplementation(() => ({
@@ -468,8 +479,10 @@ describe("Google Cloud Logging", () => {
       };
     });
 
-    await expect(require("@/lib/google/logging").writeCloudLog("test", "INFO", "msg")).resolves.toBeUndefined();
-    
+    await expect(
+      require("@/lib/google/logging").writeCloudLog("test", "INFO", "msg"),
+    ).resolves.toBeUndefined();
+
     if (original) process.env.K_SERVICE = original;
     else delete process.env.K_SERVICE;
   });
@@ -480,7 +493,7 @@ describe("Google Cloud Logging", () => {
     expect(typeof cloudLog.security).toBe("function");
     expect(typeof cloudLog.error).toBe("function");
     expect(typeof cloudLog.ai).toBe("function");
-    
+
     // Test that they don't throw when called
     cloudLog.chat("test");
     cloudLog.security("test");

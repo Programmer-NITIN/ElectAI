@@ -9,8 +9,6 @@ import { Send, Mic, Volume2, Square } from "lucide-react";
 import { useVoiceInput } from "@/hooks/useVoiceInput";
 import { useTTS } from "@/hooks/useTTS";
 
-
-
 /**
  * Main chat interface component.
  *
@@ -83,7 +81,7 @@ export function ChatInterface() {
           ...updatedMessages,
           { id: assistantId, role: "assistant", content: assistantText },
         ]);
-        
+
         // Auto-read aloud if TTS is already active or we want to prompt
         // Or simply wait for user to click the Read Aloud button.
       }
@@ -242,7 +240,9 @@ export function ChatInterface() {
               if (isSpeaking) {
                 stopTTS();
               } else {
-                const lastAssistantMsg = [...messages].reverse().find(m => m.role === "assistant");
+                const lastAssistantMsg = [...messages]
+                  .reverse()
+                  .find((m) => m.role === "assistant");
                 if (lastAssistantMsg) speak(lastAssistantMsg.content, language);
               }
             }}

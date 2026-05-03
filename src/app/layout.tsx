@@ -79,7 +79,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           aria-atomic="true"
           role="status"
         />
-        <main id="main-content" className="flex-1 flex flex-col" role="main">
+        <main id="main-content" className="flex-1 flex flex-col">
           {children}
         </main>
       </body>

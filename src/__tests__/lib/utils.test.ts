@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 /**
  * Tests for utility functions — cn(), sanitizeInput(), formatDate(), truncate().
  * @group unit
@@ -156,7 +157,7 @@ describe("parseStreamResponse()", () => {
   it("should extract text from properly formatted SSE lines", async () => {
     const encoder = new TextEncoder();
     let streamReadCount = 0;
-    
+
     // Create a mock stream reader
     const mockReader = {
       read: jest.fn().mockImplementation(() => {
@@ -188,7 +189,7 @@ describe("parseStreamResponse()", () => {
     const mockResponse = { body: null } as unknown as Response;
     const onChunk = jest.fn();
     const result = await require("@/lib/utils").parseStreamResponse(mockResponse, onChunk);
-    
+
     expect(result).toBe("");
     expect(onChunk).not.toHaveBeenCalled();
   });
@@ -196,7 +197,7 @@ describe("parseStreamResponse()", () => {
   it("should ignore malformed or non-0: lines", async () => {
     const encoder = new TextEncoder();
     let streamReadCount = 0;
-    
+
     const mockReader = {
       read: jest.fn().mockImplementation(() => {
         if (streamReadCount === 0) {

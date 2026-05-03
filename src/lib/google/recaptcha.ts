@@ -27,7 +27,7 @@ export async function verifyRecaptcha(
   }
 
   try {
-    const secretKey = process.env.RECAPTCHA_SECRET_KEY!;
+    const secretKey = process.env.RECAPTCHA_SECRET_KEY ?? "";
     const response = await fetch(RECAPTCHA_VERIFY_URL, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },

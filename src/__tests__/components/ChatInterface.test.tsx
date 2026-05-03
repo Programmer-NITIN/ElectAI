@@ -12,7 +12,9 @@ import * as utils from "@/lib/utils";
 
 // Mock child components and hooks
 jest.mock("@/components/chat/MessageBubble", () => ({
-  MessageBubble: ({ message }: any) => <div data-testid="msg-bubble">{message.content}</div>,
+  MessageBubble: ({ message }: { message: { content: string } }) => (
+    <div data-testid="msg-bubble">{message.content}</div>
+  ),
 }));
 
 jest.mock("@/hooks/useVoiceInput", () => ({
@@ -63,12 +65,12 @@ describe("ChatInterface", () => {
     render(<ChatInterface />);
     const chips = screen.getAllByRole("button", { name: /Ask: /i });
     expect(chips.length).toBeGreaterThan(0);
-    
+
     global.fetch = jest.fn().mockResolvedValue({
       ok: true,
       body: { getReader: () => ({ read: () => Promise.resolve({ done: true }) }) },
     });
-    
+
     (utils.parseStreamResponse as jest.Mock).mockImplementation(async (res, onChunk) => {
       onChunk("Thinking...");
       return "AI response";
@@ -80,7 +82,7 @@ describe("ChatInterface", () => {
       expect(screen.getAllByTestId("msg-bubble").length).toBeGreaterThan(0);
       expect(screen.getByText("Thinking...")).toBeInTheDocument();
     });
-    
+
     await waitFor(() => {
       expect(screen.getByText("AI response")).toBeInTheDocument();
     });
@@ -88,7 +90,7 @@ describe("ChatInterface", () => {
 
   it("should send a message via form submit", async () => {
     render(<ChatInterface />);
-    
+
     global.fetch = jest.fn().mockResolvedValue({
       ok: true,
       body: { getReader: () => ({ read: () => Promise.resolve({ done: true }) }) },
@@ -97,7 +99,7 @@ describe("ChatInterface", () => {
 
     const textarea = screen.getByRole("textbox", { name: "Type your message" });
     fireEvent.change(textarea, { target: { value: "Hello AI" } });
-    
+
     const sendBtn = screen.getByRole("button", { name: "Send" });
     fireEvent.click(sendBtn);
 
@@ -112,26 +114,32 @@ describe("ChatInterface", () => {
     const textarea = screen.getByRole("textbox", { name: "Type your message" });
     fireEvent.change(textarea, { target: { value: "Hello" } });
     fireEvent.keyDown(textarea, { key: "Enter", shiftKey: true });
-    
+
     expect(global.fetch).not.toHaveBeenCalled();
   });
 
   it("should handle voice input toggle", async () => {
-    let onResultCb: any;
+    let onResultCb: (text: string) => void;
     (useVoiceInput as jest.Mock).mockImplementation((cb) => {
       onResultCb = cb;
-      return { isListening: false, startListening: mockStartListening, stopListening: mockStopListening };
+      return {
+        isListening: false,
+        startListening: mockStartListening,
+        stopListening: mockStopListening,
+      };
     });
 
     const { rerender } = render(<ChatInterface />);
     const micBtn = screen.getByTestId("voice-input-btn");
-    
+
     fireEvent.click(micBtn);
     expect(mockStartListening).toHaveBeenCalled();
 
     // simulate result
     onResultCb("Test voice");
-    const textarea = screen.getByRole("textbox", { name: "Type your message" }) as HTMLTextAreaElement;
+    const textarea = screen.getByRole("textbox", {
+      name: "Type your message",
+    }) as HTMLTextAreaElement;
     await waitFor(() => expect(textarea.value).toBe("Test voice"));
 
     // test when listening is true
@@ -141,7 +149,7 @@ describe("ChatInterface", () => {
       stopListening: mockStopListening,
     });
     rerender(<ChatInterface />);
-    
+
     fireEvent.click(screen.getByTestId("voice-input-btn"));
     expect(mockStopListening).toHaveBeenCalled();
   });
@@ -149,7 +157,7 @@ describe("ChatInterface", () => {
   it("should handle TTS toggle", async () => {
     // First setup the chat so there's an assistant message
     render(<ChatInterface />);
-    
+
     global.fetch = jest.fn().mockResolvedValue({
       ok: true,
       body: { getReader: () => ({ read: () => Promise.resolve({ done: true }) }) },
@@ -166,7 +174,7 @@ describe("ChatInterface", () => {
 
     const ttsBtn = screen.getByTestId("tts-btn");
     expect(ttsBtn).not.toBeDisabled();
-    
+
     fireEvent.click(ttsBtn);
     expect(mockSpeak).toHaveBeenCalledWith("Hello this is AI", "en");
   });
@@ -179,7 +187,7 @@ describe("ChatInterface", () => {
     });
 
     render(<ChatInterface />);
-    
+
     global.fetch = jest.fn().mockResolvedValue({
       ok: true,
       body: { getReader: () => ({ read: () => Promise.resolve({ done: true }) }) },
@@ -201,7 +209,7 @@ describe("ChatInterface", () => {
 
   it("should display error message on fetch failure (network error)", async () => {
     render(<ChatInterface />);
-    
+
     global.fetch = jest.fn().mockRejectedValue(new Error("Network Error"));
 
     const textarea = screen.getByRole("textbox", { name: "Type your message" });
@@ -211,13 +219,15 @@ describe("ChatInterface", () => {
     await waitFor(() => {
       expect(utils.announceToScreenReader).toHaveBeenCalledWith(expect.any(String));
       const bubbles = screen.getAllByTestId("msg-bubble");
-      expect(bubbles[bubbles.length - 1].textContent).toContain("Something went wrong. Please try again.");
+      expect(bubbles[bubbles.length - 1].textContent).toContain(
+        "Something went wrong. Please try again.",
+      );
     });
   });
 
   it("should display error message on non-ok HTTP response", async () => {
     render(<ChatInterface />);
-    
+
     global.fetch = jest.fn().mockResolvedValue({
       ok: false,
       status: 500,
@@ -230,7 +240,9 @@ describe("ChatInterface", () => {
     await waitFor(() => {
       expect(utils.announceToScreenReader).toHaveBeenCalledWith(expect.any(String));
       const bubbles = screen.getAllByTestId("msg-bubble");
-      expect(bubbles[bubbles.length - 1].textContent).toContain("Something went wrong. Please try again.");
+      expect(bubbles[bubbles.length - 1].textContent).toContain(
+        "Something went wrong. Please try again.",
+      );
     });
   });
 });
