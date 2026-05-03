@@ -9,15 +9,19 @@ interface FeedbackButtonProps {
 
 /**
  * Feedback button pair for AI responses.
- * Allows users to rate responses as helpful/not helpful.
+ * Allows users to rate responses as helpful or not helpful.
+ *
+ * @param props - Component props containing the messageId
+ * @param props.messageId - Unique ID of the AI message being rated
+ * @returns Thumbs up/down button group or thank-you confirmation
  */
 export function FeedbackButton({ messageId }: FeedbackButtonProps) {
   const [feedback, setFeedback] = useState<"positive" | "negative" | null>(null);
 
   const handleFeedback = (rating: "positive" | "negative") => {
     setFeedback(rating);
-    // Analytics tracking would go here
-    void messageId; // Used for analytics context
+    // Log feedback with message context for analytics correlation
+    console.debug(`[Feedback] ${rating} for message ${messageId}`);
   };
 
   if (feedback) {

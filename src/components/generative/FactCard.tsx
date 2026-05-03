@@ -5,6 +5,10 @@ import { ExternalLink } from "lucide-react";
 
 /**
  * Displays key election facts in a visually appealing card format.
+ * Renders structured fact entries with optional source attribution links.
+ *
+ * @param props - Destructured {@link FactCardOutput} containing title, summary, facts, and sources
+ * @returns A fact card with labeled entries and external source links
  */
 export function FactCard({ title, summary, facts, sources }: FactCardOutput) {
   return (

@@ -4,6 +4,8 @@ import { APP_NAME } from "@/lib/constants";
 /**
  * Custom 404 page — election-themed Not Found page.
  * Provides a clear path back to the home page.
+ *
+ * @returns A centered 404 page with home navigation link
  */
 export default function NotFound() {
   return (

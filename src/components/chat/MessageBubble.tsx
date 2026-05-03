@@ -20,6 +20,11 @@ interface MessageBubbleProps {
  * Renders a single chat message bubble.
  * User messages appear on the right, assistant messages on the left
  * with markdown rendering and feedback buttons.
+ *
+ * @param props - Component props
+ * @param props.message - The chat message to render
+ * @param props.language - Current display language for i18n
+ * @returns A styled message bubble with avatar and optional feedback
  */
 export function MessageBubble({ message }: MessageBubbleProps) {
   const isUser = message.role === "user";

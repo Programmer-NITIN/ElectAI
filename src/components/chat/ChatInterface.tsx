@@ -8,13 +8,53 @@ import { sanitizeInput } from "@/lib/utils";
 import { Send, Mic, Volume2 } from "lucide-react";
 
 /**
- * Main chat interface component.
- * Implements: message history, input validation, suggestion chips,
- * voice input/output, and auto-scrolling.
+ * Parses an SSE-formatted streaming response from the chat API.
+ * Extracts text content from AI SDK `0:"text"` formatted lines.
+ *
+ * @param response - The fetch Response with a readable body stream
+ * @param onChunk - Callback invoked with accumulated text after each chunk
+ * @returns The complete assembled response text
  */
+async function parseStreamResponse(
+  response: Response,
+  onChunk: (accumulated: string) => void,
+): Promise<string> {
+  const reader = response.body?.getReader();
+  const decoder = new TextDecoder();
+  let assembled = "";
+
+  if (!reader) return assembled;
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    const chunk = decoder.decode(value, { stream: true });
+    for (const line of chunk.split("\n")) {
+      if (!line.startsWith("0:")) continue;
+      try {
+        const text = JSON.parse(line.slice(2));
+        if (typeof text === "string") {
+          assembled += text;
+        }
+      } catch {
+        // Non-JSON line — skip silently
+      }
+    }
+
+    onChunk(assembled);
+  }
+
+  return assembled;
+}
+
 /**
  * Main chat interface component.
- * Handles the conversation state, user input, and rendering of message bubbles.
+ *
+ * Manages conversation state, user input with sanitization, suggestion chips,
+ * voice input/output controls, streaming response parsing, and auto-scrolling.
+ *
+ * @returns The chat interface JSX element
  */
 export function ChatInterface() {
   const [language] = useState<Language>("en");
@@ -71,55 +111,17 @@ export function ChatInterface() {
         throw new Error(`HTTP ${response.status}`);
       }
 
-      // Read streaming response
-      const reader = response.body?.getReader();
-      const decoder = new TextDecoder();
-      let assistantText = "";
+      // Parse the streaming response and update UI in real-time
       const assistantId = crypto.randomUUID();
+      const assistantText = await parseStreamResponse(response, (text) => {
+        setMessages([...updatedMessages, { id: assistantId, role: "assistant", content: text }]);
+      });
 
-      if (reader) {
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-
-          const chunk = decoder.decode(value, { stream: true });
-          // Parse SSE-like lines for text content
-          const lines = chunk.split("\n");
-          for (const line of lines) {
-            if (line.startsWith("0:")) {
-              // AI SDK text stream format: 0:"text content"
-              try {
-                const textContent = JSON.parse(line.slice(2));
-                if (typeof textContent === "string") {
-                  assistantText += textContent;
-                }
-              } catch {
-                // Non-JSON line, skip
-              }
-            }
-          }
-
-          // Update message in state for real-time display
-          setMessages([
-            ...updatedMessages,
-            {
-              id: assistantId,
-              role: "assistant",
-              content: assistantText,
-            },
-          ]);
-        }
-      }
-
-      // Final update
+      // Final state update with complete response
       if (assistantText) {
         setMessages([
           ...updatedMessages,
-          {
-            id: assistantId,
-            role: "assistant",
-            content: assistantText,
-          },
+          { id: assistantId, role: "assistant", content: assistantText },
         ]);
       }
 

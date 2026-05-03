@@ -6,7 +6,7 @@
 [![TypeScript 5](https://img.shields.io/badge/TypeScript-5_Strict-3178C6?logo=typescript&logoColor=white)](https://typescriptlang.org/)
 [![Gemini 2.5 Pro](https://img.shields.io/badge/Gemini-2.5_Pro-4285F4?logo=google&logoColor=white)](https://ai.google.dev/)
 [![Firebase](https://img.shields.io/badge/Firebase-Auth+Firestore+Analytics-FFCA28?logo=firebase&logoColor=black)](https://firebase.google.com/)
-[![Tests](https://img.shields.io/badge/Tests-201_Passing-brightgreen?logo=jest&logoColor=white)](TESTING.md)
+[![Tests](https://img.shields.io/badge/Tests-333_Passing-brightgreen?logo=jest&logoColor=white)](TESTING.md)
 [![WCAG 2.1 AA](https://img.shields.io/badge/Accessibility-WCAG_2.1_AA-blue?logo=accessibility&logoColor=white)](https://www.w3.org/WAI/WCAG21/quickref/)
 [![Cloud Run](https://img.shields.io/badge/Deploy-Cloud_Run-4285F4?logo=googlecloud&logoColor=white)](https://cloud.google.com/run)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
@@ -22,7 +22,7 @@
 - [Multi-Agent AI Architecture](#-multi-agent-ai-architecture)
 - [Google Services Integration (12 Services)](#-google-services-integration-12-services)
 - [Security Architecture](#-security-architecture)
-- [Testing Strategy (201 Tests)](#-testing-strategy-201-tests)
+- [Testing Strategy (333 Tests)](#-testing-strategy-333-tests)
 - [Accessibility (WCAG 2.1 AA)](#-accessibility-wcag-21-aa)
 - [Performance Optimization](#-performance-optimization)
 - [Quick Start](#-quick-start)
@@ -243,12 +243,12 @@ Layer 7: Data                  → No PII persistence + Firebase Security Rules
 
 ---
 
-## 🧪 Testing Strategy (201 Tests)
+## 🧪 Testing Strategy (333 Tests)
 
 > Full details in [TESTING.md](TESTING.md)
 
 ```bash
-npm test              # Run all 201 tests across 17 suites
+npm test              # Run all 333 tests across 21 suites
 npm run test:coverage # Generate V8 coverage report
 npm run test:ci       # CI mode with coverage
 npm run test:watch    # TDD watch mode
@@ -461,7 +461,7 @@ ElectAI/
     │   ├── chat.ts              # ChatMessage interface (shared)
     │   ├── speech.d.ts          # Web Speech API declarations
     │   └── index.ts             # Barrel export
-    └── __tests__/               # 201 tests across 17 suites
+    └── __tests__/               # 333 tests across 21 suites
         ├── lib/                 # 8 unit test suites
         ├── components/          # 5 component test suites
         ├── security/            # 1 security/middleware suite

@@ -6,7 +6,11 @@ import { cn } from "@/lib/utils";
 import { CheckCircle, Circle, ExternalLink } from "lucide-react";
 
 /**
- * Interactive voter registration checklist with progress tracking.
+ * Interactive voter preparation checklist with toggle-based progress tracking.
+ * Each item can be checked off, and the component tracks completion count.
+ *
+ * @param props - Destructured {@link ChecklistOutput} containing title, description, and items
+ * @returns A toggleable checklist with progress counter and optional external links
  */
 export function ActionChecklist({ title, description, items }: ChecklistOutput) {
   const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());

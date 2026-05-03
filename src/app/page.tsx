@@ -6,6 +6,8 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
  * Home page — primary entry point for ElectAI.
  * Renders the header with branding and the AI chat interface
  * wrapped in an error boundary for resilience.
+ *
+ * @returns The main page layout with header and chat interface
  */
 export default function Home() {
   return (

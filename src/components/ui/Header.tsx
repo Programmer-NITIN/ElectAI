@@ -5,12 +5,10 @@ import { APP_NAME, APP_TAGLINE } from "@/lib/constants";
 import { getSupportedLanguages, type Language } from "@/lib/i18n";
 
 /**
- * Application header with branding, language selector, and theme toggle.
- * Implements full keyboard navigation and ARIA attributes.
- */
-/**
- * Main application header component.
- * Displays the application title, language selector, and navigation.
+ * Application header with branding, language selector, and India badge.
+ * Implements full keyboard navigation and ARIA attributes for accessibility.
+ *
+ * @returns The header JSX element with navigation controls
  */
 export function Header() {
   const [language, setLanguage] = useState<Language>("en");

@@ -5,6 +5,11 @@ import { APP_NAME } from "@/lib/constants";
 /**
  * Global error boundary page — catches unhandled errors at the route level.
  * Provides a retry mechanism and user-friendly error message.
+ *
+ * @param props - Error props from Next.js error boundary
+ * @param props.error - The caught Error object, optionally with a digest ID
+ * @param props.reset - Function to retry rendering the errored segment
+ * @returns An error page with retry button and optional digest ID
  */
 export default function Error({
   error,

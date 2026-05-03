@@ -30,9 +30,7 @@ const messagesPayloadSchema = z.object({
         id: z.string().optional(),
         role: z.enum(["user", "assistant", "system", "tool"]),
         content: z.string().optional().default(""),
-        parts: z
-          .array(z.object({ type: z.string(), text: z.string().optional() }))
-          .optional(),
+        parts: z.array(z.object({ type: z.string(), text: z.string().optional() })).optional(),
       }),
     )
     .min(1, "At least one message is required")
@@ -114,10 +112,7 @@ export async function POST(request: Request) {
     // Runtime validation of the messages array structure using Zod
     const parsed = messagesPayloadSchema.safeParse(body);
     if (!parsed.success) {
-      return errorResponse(
-        parsed.error.issues[0]?.message || "Invalid request payload",
-        400,
-      );
+      return errorResponse(parsed.error.issues[0]?.message || "Invalid request payload", 400);
     }
 
     const { messages } = parsed.data as { messages: ChatMessage[] };

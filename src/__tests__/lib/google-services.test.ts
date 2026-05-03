@@ -4,7 +4,12 @@
  * @group google-services
  */
 
-import { isMapsAvailable, getMapEmbedUrl, getDirectionsUrl, getStaticMapUrl } from "@/lib/google/maps";
+import {
+  isMapsAvailable,
+  getMapEmbedUrl,
+  getDirectionsUrl,
+  getStaticMapUrl,
+} from "@/lib/google/maps";
 import { isRecaptchaAvailable } from "@/lib/google/recaptcha";
 import { isTranslateAvailable, SUPPORTED_LANGUAGES, translateText } from "@/lib/google/translate";
 import { isTTSAvailable } from "@/lib/google/tts";

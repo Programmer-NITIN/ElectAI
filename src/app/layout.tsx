@@ -54,7 +54,12 @@ export const metadata: Metadata = {
 
 /**
  * Root layout — wraps all pages with global styles, fonts, and accessibility features.
- * Includes skip-link and screen reader live region.
+ * Includes a skip-link for keyboard navigation and a screen reader live region
+ * for dynamic announcements.
+ *
+ * @param props - Layout props
+ * @param props.children - Child page content rendered within the layout
+ * @returns The HTML document shell with header, main content, and accessibility hooks
  */
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (

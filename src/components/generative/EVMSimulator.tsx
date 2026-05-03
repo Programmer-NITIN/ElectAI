@@ -7,7 +7,11 @@ import { ChevronRight, ChevronLeft, CheckCircle } from "lucide-react";
 
 /**
  * Interactive EVM/VVPAT voting process simulator.
- * Guides users step-by-step through the election day voting process.
+ * Guides users step-by-step through the election day voting process
+ * with progress tracking and navigation controls.
+ *
+ * @param props - Destructured {@link EVMSimulatorOutput} containing title, description, and steps
+ * @returns An interactive step-by-step simulator with progress bar
  */
 export function EVMSimulator({ title, description, steps }: EVMSimulatorOutput) {
   const [currentStep, setCurrentStep] = useState(0);

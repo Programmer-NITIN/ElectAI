@@ -339,12 +339,7 @@ describe("Accessibility — WCAG 2.1 AA Compliance", () => {
 
   describe("MessageBubble Component", () => {
     it("should have article role on user message", () => {
-      render(
-        <MessageBubble
-          message={{ id: "1", role: "user", content: "Hello" }}
-          language="en"
-        />,
-      );
+      render(<MessageBubble message={{ id: "1", role: "user", content: "Hello" }} language="en" />);
       expect(screen.getByRole("article", { name: "You said" })).toBeInTheDocument();
     });
 

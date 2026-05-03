@@ -5,6 +5,10 @@ import { cn } from "@/lib/utils";
 
 /**
  * Interactive election timeline displaying phases with status indicators.
+ * Renders each phase with color-coded status (completed, current, upcoming).
+ *
+ * @param props - Destructured {@link ConstituencyRoadmap} containing title, description, and steps
+ * @returns A vertical timeline with status badges and date labels
  */
 export function InteractiveTimeline({ title, description, steps }: ConstituencyRoadmap) {
   return (

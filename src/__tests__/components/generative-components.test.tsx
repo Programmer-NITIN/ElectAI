@@ -18,7 +18,12 @@ const evmData = {
   steps: [
     { id: "1", title: "Enter booth", description: "Show your ID to officials", icon: "🏛️" },
     { id: "2", title: "Verify identity", description: "Officer checks EPIC card" },
-    { id: "3", title: "Press button", description: "Press button next to candidate", instruction: "Press firmly" },
+    {
+      id: "3",
+      title: "Press button",
+      description: "Press button next to candidate",
+      instruction: "Press firmly",
+    },
   ],
 };
 
@@ -26,9 +31,25 @@ const timelineData = {
   title: "Election Timeline",
   description: "Key phases of the 2024 election",
   steps: [
-    { id: "1", title: "Announcement", description: "EC announces dates", status: "completed" as const },
-    { id: "2", title: "Nominations", description: "Filing of nominations", status: "current" as const },
-    { id: "3", title: "Polling Day", description: "Cast your vote", status: "upcoming" as const, date: "April 19" },
+    {
+      id: "1",
+      title: "Announcement",
+      description: "EC announces dates",
+      status: "completed" as const,
+    },
+    {
+      id: "2",
+      title: "Nominations",
+      description: "Filing of nominations",
+      status: "current" as const,
+    },
+    {
+      id: "3",
+      title: "Polling Day",
+      description: "Cast your vote",
+      status: "upcoming" as const,
+      date: "April 19",
+    },
   ],
 };
 
@@ -36,8 +57,20 @@ const checklistData = {
   title: "Voter Registration Checklist",
   description: "Complete these steps to register",
   items: [
-    { id: "1", text: "Fill Form 6", description: "Download from ECI website", completed: false, priority: "high" as const },
-    { id: "2", text: "Attach documents", completed: false, priority: "medium" as const, url: "https://eci.gov.in" },
+    {
+      id: "1",
+      text: "Fill Form 6",
+      description: "Download from ECI website",
+      completed: false,
+      priority: "high" as const,
+    },
+    {
+      id: "2",
+      text: "Attach documents",
+      completed: false,
+      priority: "medium" as const,
+      url: "https://eci.gov.in",
+    },
     { id: "3", text: "Submit online", completed: false, priority: "low" as const },
   ],
 };
@@ -49,9 +82,7 @@ const factCardData = {
     { label: "Voters", value: "970 million", icon: "👥" },
     { label: "Constituencies", value: "543" },
   ],
-  sources: [
-    { title: "Election Commission of India", url: "https://eci.gov.in" },
-  ],
+  sources: [{ title: "Election Commission of India", url: "https://eci.gov.in" }],
 };
 
 // ── EVMSimulator Tests ────────────────────────────────────────────────
@@ -218,7 +249,9 @@ describe("ActionChecklist", () => {
 
   it("should have region role with title as label", () => {
     render(<ActionChecklist {...checklistData} />);
-    expect(screen.getByRole("region", { name: "Voter Registration Checklist" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("region", { name: "Voter Registration Checklist" }),
+    ).toBeInTheDocument();
   });
 
   it("should have list role for items", () => {
